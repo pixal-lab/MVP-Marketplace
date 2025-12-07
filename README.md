@@ -29,10 +29,10 @@ Marketplace/
 ├── lista-materiales.html # Gestión de listas
 ├── checkout.html       # Proceso de checkout
 ├── seguimiento.html    # Seguimiento de pedido
+├── proveedor-panel.html # Panel de administración de proveedor
 ├── js/
 │   ├── app.js         # Lógica principal
-│   ├── inventario.js  # Gestión de inventario
-│   └── logistica.js   # Gestión logística
+│   └── proveedor.js   # Gestión de inventario para proveedores
 └── diagrama-flujo.md  # Diagrama de acciones principales
 ```
 
@@ -44,6 +44,12 @@ Marketplace/
 - ✅ Listas de materiales (crear, guardar, compartir)
 - ✅ Checkout simplificado
 - ✅ Seguimiento de pedidos en tiempo real
+- ✅ Panel de proveedor con gestión de inventario
+- ✅ Gestión de stock por sucursal con lead times
+- ✅ Movimientos y trazabilidad
+- ✅ Gestión de excedentes
+- ✅ Alertas automáticas
+- ✅ Reconciliación de stock
 - ❌ Sin registros de usuario
 - ❌ Sin formularios complejos
 - ❌ Sin subida de archivos

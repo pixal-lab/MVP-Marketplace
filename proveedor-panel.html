@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Proveedor - Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .provider-info {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .stat-card.warning .stat-value {
+            color: #f39c12;
+        }
+        
+        .stat-card.danger .stat-value {
+            color: #e74c3c;
+        }
+        
+        .stat-card.success .stat-value {
+            color: #27ae60;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .tab.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background: #ecf0f1;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .inventory-table th {
+            background: #ecf0f1;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #bdc3c7;
+        }
+        
+        .inventory-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .inventory-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .stock-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .stock-high {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .stock-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .stock-low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .stock-hold {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .movement-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .movement-info {
+            flex: 1;
+        }
+        
+        .movement-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .movement-entrada {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .movement-salida {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .movement-ajuste {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .movement-transferencia {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .alert-item {
+            padding: 1rem;
+            border-left: 4px solid;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            background: #fff;
+        }
+        
+        .alert-warning {
+            border-color: #f39c12;
+            background: #fef5e7;
+        }
+        
+        .alert-danger {
+            border-color: #e74c3c;
+            background: #fadbd8;
+        }
+        
+        .alert-info {
+            border-color: #3498db;
+            background: #ebf5fb;
+        }
+        
+        .sucursal-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #ecf0f1;
+            border-radius: 8px;
+        }
+        
+        .sucursal-option {
+            padding: 0.5rem 1rem;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            background: white;
+            transition: border-color 0.3s;
+        }
+        
+        .sucursal-option.active {
+            border-color: #3498db;
+            background: #ebf5fb;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .quantity-input {
+            width: 80px;
+            padding: 0.5rem;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: #ecf0f1;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>🏗️ Panel de Proveedor</h1>
+            <div class="provider-info">Materiales ABC - Administración de Inventario</div>
+        </div>
+        <a href="index.html" class="nav-btn" style="background: rgba(255,255,255,0.2); color: white;">Ver Marketplace</a>
+    </div>
+    
+    <div class="container">
+        <div class="nav-actions">
+            <a href="index.html" class="nav-btn">← Volver al Marketplace</a>
+        </div>
+        
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalSKUs">45</div>
+                <div class="stat-label">SKUs Activos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalStock">12,450</div>
+                <div class="stat-label">Unidades en Stock</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-value" id="stockHold">125</div>
+                <div class="stat-label">Stock en HOLD</div>
+            </div>
+            <div class="stat-card danger">
+                <div class="stat-value" id="alertas">3</div>
+                <div class="stat-label">Alertas Activas</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-value" id="sucursales">3</div>
+                <div class="stat-label">Sucursales</div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="cambiarTab('inventario')">Inventario</button>
+            <button class="tab" onclick="cambiarTab('movimientos')">Movimientos</button>
+            <button class="tab" onclick="cambiarTab('excedentes')">Excedentes</button>
+            <button class="tab" onclick="cambiarTab('alertas')">Alertas</button>
+            <button class="tab" onclick="cambiarTab('reconciliacion')">Reconciliación</button>
+        </div>
+        
+        <!-- Tab Inventario -->
+        <div id="inventario" class="tab-content active">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Gestión de Inventario por Sucursal</h2>
+                    <button class="btn btn-primary btn-small">Sincronizar Stock</button>
+                </div>
+                
+                <div class="sucursal-selector">
+                    <div class="sucursal-option active" onclick="seleccionarSucursal(this, 'todos')">
+                        Todas las Sucursales
+                    </div>
+                    <div class="sucursal-option" onclick="seleccionarSucursal(this, 'centro')">
+                        Sucursal Centro (Lead: 2h)
+                    </div>
+                    <div class="sucursal-option" onclick="seleccionarSucursal(this, 'norte')">
+                        Sucursal Norte (Lead: 4h)
+                    </div>
+                    <div class="sucursal-option" onclick="seleccionarSucursal(this, 'sur')">
+                        Sucursal Sur (Lead: 3h)
+                    </div>
+                </div>
+                
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Producto</th>
+                            <th>Sucursal</th>
+                            <th>Stock Disponible</th>
+                            <th>Stock en HOLD</th>
+                            <th>Condición</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody">
+                        <!-- Datos se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Tab Movimientos -->
+        <div id="movimientos" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Movimientos y Trazabilidad</h2>
+                    <div>
+                        <button class="btn btn-secondary btn-small">Filtrar</button>
+                        <button class="btn btn-primary btn-small">Exportar</button>
+                    </div>
+                </div>
+                
+                <div id="movementsList">
+                    <!-- Movimientos se cargarán aquí -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab Excedentes -->
+        <div id="excedentes" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Gestión de Excedentes</h2>
+                    <button class="btn btn-primary btn-small">Nuevo Excedente</button>
+                </div>
+                
+                <div id="excedentesList">
+                    <!-- Excedentes se cargarán aquí -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab Alertas -->
+        <div id="alertas" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Alertas Automáticas</h2>
+                </div>
+                
+                <div id="alertsList">
+                    <!-- Alertas se cargarán aquí -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab Reconciliación -->
+        <div id="reconciliacion" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Reconciliación de Stock</h2>
+                    <button class="btn btn-primary btn-small">Ejecutar Reconciliación</button>
+                </div>
+                
+                <div id="reconciliationList">
+                    <!-- Diferencias se cargarán aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/proveedor.js"></script>
+    <script>
+        // Datos de ejemplo
+        const inventario = [
+            {
+                id: 1,
+                sku: "CEM-PORT-50",
+                nombre: "Cemento Portland 50kg",
+                sucursal: "Centro",
+                stock: 150,
+                hold: 25,
+                condicion: "nuevo",
+                umbralMin: 50,
+                umbralMax: 200
+            },
+            {
+                id: 2,
+                sku: "LAD-FIS-1000",
+                nombre: "Ladrillos Fiscales x1000",
+                sucursal: "Norte",
+                stock: 80,
+                hold: 10,
+                condicion: "nuevo",
+                umbralMin: 100,
+                umbralMax: 500
+            },
+            {
+                id: 3,
+                sku: "PIN-LAT-20",
+                nombre: "Pintura Latex 20L",
+                sucursal: "Sur",
+                stock: 12,
+                hold: 2,
+                condicion: "nuevo",
+                umbralMin: 20,
+                umbralMax: 100
+            },
+            {
+                id: 4,
+                sku: "ARE-GRU-m3",
+                nombre: "Arena Gruesa m³",
+                sucursal: "Centro",
+                stock: 8,
+                hold: 0,
+                condicion: "nuevo",
+                umbralMin: 10,
+                umbralMax: 50
+            },
+            {
+                id: 5,
+                sku: "CEM-PORT-50-EX",
+                nombre: "Cemento Portland 50kg (Excedente)",
+                sucursal: "Centro",
+                stock: 5,
+                hold: 0,
+                condicion: "abierto",
+                porcentaje: 75,
+                umbralMin: 0,
+                umbralMax: 0
+            }
+        ];
+        
+        const movimientos = [
+            {
+                fecha: "2024-01-20 14:30",
+                tipo: "salida",
+                sku: "CEM-PORT-50",
+                cantidad: 10,
+                sucursal: "Centro",
+                motivo: "Venta #ORD-2024-001234",
+                usuario: "Juan Pérez"
+            },
+            {
+                fecha: "2024-01-20 13:15",
+                tipo: "entrada",
+                sku: "LAD-FIS-1000",
+                cantidad: 50,
+                sucursal: "Norte",
+                motivo: "Reaprovisionamiento",
+                usuario: "María González"
+            },
+            {
+                fecha: "2024-01-20 12:00",
+                tipo: "ajuste",
+                sku: "PIN-LAT-20",
+                cantidad: -2,
+                sucursal: "Sur",
+                motivo: "Ajuste por inventario físico",
+                usuario: "Carlos Ruiz"
+            },
+            {
+                fecha: "2024-01-20 11:45",
+                tipo: "transferencia",
+                sku: "ARE-GRU-m3",
+                cantidad: 3,
+                sucursalOrigen: "Norte",
+                sucursalDestino: "Centro",
+                motivo: "Transferencia entre sucursales",
+                usuario: "Ana Martínez"
+            },
+            {
+                fecha: "2024-01-20 10:20",
+                tipo: "entrada",
+                sku: "CEM-PORT-50-EX",
+                cantidad: 5,
+                sucursal: "Centro",
+                motivo: "Ingreso de excedente",
+                usuario: "Luis Fernández"
+            }
+        ];
+        
+        const alertas = [
+            {
+                tipo: "danger",
+                sku: "PIN-LAT-20",
+                mensaje: "Stock bajo el umbral mínimo (12/20 unidades)",
+                fecha: "2024-01-20 09:00"
+            },
+            {
+                tipo: "warning",
+                sku: "ARE-GRU-m3",
+                mensaje: "Stock cercano al umbral mínimo (8/10 unidades)",
+                fecha: "2024-01-20 08:30"
+            },
+            {
+                tipo: "info",
+                sku: "CEM-PORT-50",
+                mensaje: "Reconciliación pendiente: diferencia de 5 unidades detectada",
+                fecha: "2024-01-19 16:00"
+            }
+        ];
+        
+        const excedentes = [
+            {
+                id: 1,
+                sku: "CEM-PORT-50-EX",
+                nombre: "Cemento Portland 50kg",
+                cantidad: 5,
+                porcentaje: 75,
+                condicion: "abierto",
+                precioSugerido: 6000,
+                obraOrigen: "Obra San Martín",
+                fechaIngreso: "2024-01-20"
+            }
+        ];
+        
+        function cambiarTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+        
+        function seleccionarSucursal(element, sucursal) {
+            document.querySelectorAll('.sucursal-option').forEach(opt => opt.classList.remove('active'));
+            element.classList.add('active');
+            renderInventario(sucursal);
+        }
+        
+        function renderInventario(sucursal = 'todos') {
+            const tbody = document.getElementById('inventoryTableBody');
+            const productos = sucursal === 'todos' 
+                ? inventario 
+                : inventario.filter(p => p.sucursal.toLowerCase() === sucursal);
+            
+            tbody.innerHTML = productos.map(item => {
+                const stockDisponible = item.stock - item.hold;
+                const porcentajeStock = (stockDisponible / item.umbralMax) * 100;
+                let stockClass = 'stock-high';
+                if (porcentajeStock < 20) stockClass = 'stock-low';
+                else if (porcentajeStock < 50) stockClass = 'stock-medium';
+                
+                return `
+                    <tr>
+                        <td><strong>${item.sku}</strong></td>
+                        <td>${item.nombre}</td>
+                        <td>${item.sucursal}</td>
+                        <td>
+                            <span class="stock-badge ${stockClass}">${stockDisponible} unidades</span>
+                        </td>
+                        <td>
+                            ${item.hold > 0 ? `<span class="stock-badge stock-hold">${item.hold} en HOLD</span>` : '-'}
+                        </td>
+                        <td>${item.condicion}</td>
+                        <td>
+                            <div class="quantity-control">
+                                <button class="btn btn-secondary btn-small" onclick="ajustarStock(${item.id}, -1)">-</button>
+                                <input type="number" class="quantity-input" value="${item.stock}" onchange="actualizarStock(${item.id}, this.value)">
+                                <button class="btn btn-secondary btn-small" onclick="ajustarStock(${item.id}, 1)">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function renderMovimientos() {
+            const container = document.getElementById('movementsList');
+            container.innerHTML = movimientos.map(mov => {
+                const tipoClass = `movement-${mov.tipo}`;
+                const tipoLabel = {
+                    entrada: 'Entrada',
+                    salida: 'Salida',
+                    ajuste: 'Ajuste',
+                    transferencia: 'Transferencia'
+                }[mov.tipo];
+                
+                return `
+                    <div class="movement-item">
+                        <div class="movement-info">
+                            <span class="movement-type ${tipoClass}">${tipoLabel}</span>
+                            <strong>${mov.sku}</strong> - ${mov.cantidad > 0 ? '+' : ''}${mov.cantidad} unidades
+                            <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
+                                ${mov.motivo} • ${mov.sucursal || (mov.sucursalOrigen + ' → ' + mov.sucursalDestino)} • ${mov.usuario}
+                            </div>
+                        </div>
+                        <div style="color: #666; font-size: 0.9rem;">${mov.fecha}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderAlertas() {
+            const container = document.getElementById('alertsList');
+            container.innerHTML = alertas.map(alert => {
+                const alertClass = `alert-${alert.tipo}`;
+                return `
+                    <div class="alert-item ${alertClass}">
+                        <strong>${alert.sku}</strong>
+                        <div style="margin-top: 0.5rem;">${alert.mensaje}</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8;">${alert.fecha}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderExcedentes() {
+            const container = document.getElementById('excedentesList');
+            container.innerHTML = excedentes.map(exc => `
+                <div class="movement-item">
+                    <div class="movement-info">
+                        <strong>${exc.nombre}</strong> (${exc.sku})
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
+                            Cantidad: ${exc.cantidad} • ${exc.porcentaje}% restante • Condición: ${exc.condicion}
+                            <br>Obra origen: ${exc.obraOrigen} • Precio sugerido: $${exc.precioSugerido.toLocaleString()}
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary btn-small" onclick="aprobarExcedente(${exc.id})">Aprobar</button>
+                        <button class="btn btn-secondary btn-small" onclick="rechazarExcedente(${exc.id})">Rechazar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function renderReconciliacion() {
+            const container = document.getElementById('reconciliationList');
+            container.innerHTML = `
+                <div class="alert-item alert-info">
+                    <strong>Última reconciliación:</strong> 2024-01-19 16:00
+                    <div style="margin-top: 0.5rem;">
+                        Se detectaron 2 diferencias entre stock declarado y stock transado.
+                    </div>
+                </div>
+                <table class="inventory-table" style="margin-top: 1rem;">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Stock Declarado</th>
+                            <th>Stock Transado</th>
+                            <th>Diferencia</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CEM-PORT-50</td>
+                            <td>150</td>
+                            <td>145</td>
+                            <td style="color: #e74c3c;">-5</td>
+                            <td><button class="btn btn-secondary btn-small">Ajustar</button></td>
+                        </tr>
+                        <tr>
+                            <td>LAD-FIS-1000</td>
+                            <td>80</td>
+                            <td>82</td>
+                            <td style="color: #27ae60;">+2</td>
+                            <td><button class="btn btn-secondary btn-small">Ajustar</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        }
+        
+        function ajustarStock(id, delta) {
+            const item = inventario.find(i => i.id === id);
+            if (item) {
+                item.stock = Math.max(0, item.stock + delta);
+                renderInventario();
+            }
+        }
+        
+        function actualizarStock(id, nuevoStock) {
+            const item = inventario.find(i => i.id === id);
+            if (item) {
+                item.stock = parseInt(nuevoStock) || 0;
+                renderInventario();
+                // En producción, aquí se haría una llamada a la API
+                console.log('Stock actualizado:', item.sku, nuevoStock);
+            }
+        }
+        
+        function aprobarExcedente(id) {
+            alert('Excedente aprobado. Se agregará al inventario después de QC.');
+        }
+        
+        function rechazarExcedente(id) {
+            alert('Excedente rechazado.');
+        }
+        
+        // Inicializar vistas
+        renderInventario();
+        renderMovimientos();
+        renderAlertas();
+        renderExcedentes();
+        renderReconciliacion();
+    </script>
+</body>
+</html>
+
