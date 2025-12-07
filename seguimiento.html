@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento de Pedido - Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .order-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .order-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .info-item {
+            padding: 0.75rem;
+            background: #ecf0f1;
+            border-radius: 4px;
+        }
+        
+        .info-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .info-value {
+            font-weight: 600;
+        }
+        
+        .timeline-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ecf0f1;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ecf0f1;
+            border: 2px solid white;
+        }
+        
+        .timeline-item.completed::before {
+            background: #27ae60;
+        }
+        
+        .timeline-item.active::before {
+            background: #3498db;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-time {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .map-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .map-placeholder {
+            width: 100%;
+            height: 300px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #95a5a6;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: #ecf0f1;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏗️ Marketplace de Materiales</h1>
+    </div>
+    
+    <div class="container">
+        <div class="nav-actions" style="margin-bottom: 1rem;">
+            <a href="index.html" class="nav-btn">← Volver al Inicio</a>
+        </div>
+        
+        <div class="order-header">
+            <h2>Seguimiento de Pedido</h2>
+            <div class="order-info">
+                <div class="info-item">
+                    <div class="info-label">Número de Pedido</div>
+                    <div class="info-value">#ORD-2024-001234</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Estado Actual</div>
+                    <div class="info-value" style="color: #3498db;">En Ruta</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">ETA</div>
+                    <div class="info-value">15 minutos</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Operador</div>
+                    <div class="info-value">Logística Express</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline-section">
+            <h2>Timeline del Pedido</h2>
+            <div class="timeline">
+                <div class="timeline-item completed">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Pedido Confirmado</div>
+                        <div class="timeline-time">Hoy, 10:30 AM</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item completed">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Stock Reservado (HOLD)</div>
+                        <div class="timeline-time">Hoy, 10:31 AM</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item completed">
+                    <div class="timeline-content">
+                        <div class="timeline-title">En Preparación</div>
+                        <div class="timeline-time">Hoy, 10:45 AM</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item completed">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Asignado a Operador</div>
+                        <div class="timeline-time">Hoy, 11:15 AM</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem;">Operador: Logística Express</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item completed">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Retirado de Bodega</div>
+                        <div class="timeline-time">Hoy, 11:30 AM</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item active">
+                    <div class="timeline-content">
+                        <div class="timeline-title">En Ruta</div>
+                        <div class="timeline-time">Hoy, 11:35 AM</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem;">📍 Ubicación actualizada en tiempo real</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Cercano a Destino</div>
+                        <div class="timeline-time">Pendiente</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Entregado</div>
+                        <div class="timeline-time">Pendiente</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="map-section">
+            <h2>Ubicación en Tiempo Real</h2>
+            <div class="map-placeholder">
+                🗺️ Mapa con tracking en tiempo real<br>
+                (En producción mostraría ubicación del vehículo)
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simulación de actualización en tiempo real
+        function actualizarTracking() {
+            console.log('Actualizando tracking...');
+            // En producción, aquí se actualizaría desde la API
+        }
+        
+        // Simular actualizaciones cada 10 segundos
+        setInterval(actualizarTracking, 10000);
+    </script>
+</body>
+</html>
+

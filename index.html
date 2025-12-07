@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace - Materiales de Construcción</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-group label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .results-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #95a5a6;
+        }
+        
+        .product-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .product-info {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-availability {
+            font-size: 0.85rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .available {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .partial {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: #ecf0f1;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            display: inline-block;
+        }
+        
+        .nav-btn:hover {
+            background: #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏗️ Marketplace de Materiales de Construcción</h1>
+    </div>
+    
+    <div class="container">
+        <div class="search-section">
+            <h2>Buscar Materiales</h2>
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre, SKU o categoría...">
+                <button class="btn btn-primary" onclick="buscar()">Buscar</button>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Tipo de Stock</label>
+                    <select id="tipoStock">
+                        <option value="todos">Todos</option>
+                        <option value="nuevo">Nuevo</option>
+                        <option value="excedente">Excedente</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Condición</label>
+                    <select id="condicion">
+                        <option value="todas">Todas</option>
+                        <option value="nuevo">Nuevo</option>
+                        <option value="abierto">Abierto</option>
+                        <option value="parcial">Parcial</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Ordenar por</label>
+                    <select id="ordenar">
+                        <option value="relevancia">Relevancia</option>
+                        <option value="precio">Precio</option>
+                        <option value="distancia">Distancia</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <div class="results-header">
+                <h3>Resultados de Búsqueda</h3>
+                <span id="resultCount">12 productos encontrados</span>
+            </div>
+            
+            <div class="product-grid" id="productGrid">
+                <!-- Productos se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+        
+        <div class="nav-actions">
+            <a href="carrito.html" class="nav-btn">Ver Carrito (3)</a>
+            <a href="lista-materiales.html" class="nav-btn">Mis Listas</a>
+            <a href="seguimiento.html" class="nav-btn">Seguimiento</a>
+        </div>
+    </div>
+    
+    <script src="js/app.js"></script>
+    <script>
+        // Datos de ejemplo
+        const productos = [
+            {
+                id: 1,
+                nombre: "Cemento Portland 50kg",
+                sku: "CEM-PORT-50",
+                precio: 8500,
+                disponible: "disponible",
+                stock: 150,
+                proveedor: "Materiales ABC",
+                distancia: "2.5 km",
+                tipo: "nuevo"
+            },
+            {
+                id: 2,
+                nombre: "Ladrillos Fiscales x1000",
+                sku: "LAD-FIS-1000",
+                precio: 45000,
+                disponible: "parcial",
+                stock: 350,
+                proveedor: "Construcciones XYZ",
+                distancia: "5.1 km",
+                tipo: "nuevo"
+            },
+            {
+                id: 3,
+                nombre: "Pintura Latex 20L (Excedente)",
+                sku: "PIN-LAT-20-EX",
+                precio: 32000,
+                disponible: "disponible",
+                stock: 1,
+                proveedor: "Obra San Martín",
+                distancia: "1.8 km",
+                tipo: "excedente",
+                porcentaje: 85,
+                condicion: "abierto"
+            }
+        ];
+        
+        function renderProductos(productos) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = productos.map(producto => `
+                <div class="product-card" onclick="verProducto(${producto.id})">
+                    <div class="product-image">📦 Imagen del Producto</div>
+                    <div class="product-title">${producto.nombre}</div>
+                    <div class="product-info">SKU: ${producto.sku}</div>
+                    <div class="product-info">Proveedor: ${producto.proveedor}</div>
+                    <div class="product-info">📍 ${producto.distancia}</div>
+                    <div class="product-price">$${producto.precio.toLocaleString()}</div>
+                    <div>
+                        <span class="product-availability ${producto.disponible}">
+                            ${producto.disponible === 'disponible' ? '✓ Disponible' : '⚠ Parcial'}
+                        </span>
+                        ${producto.tipo === 'excedente' ? '<span style="background:#e8f4f8;color:#2980b9;padding:0.25rem 0.5rem;border-radius:4px;font-size:0.85rem;margin-left:0.5rem;">Excedente</span>' : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function buscar() {
+            const query = document.getElementById('searchInput').value;
+            console.log('Buscando:', query);
+            // En el MVP real, aquí se filtrarían los productos
+            renderProductos(productos);
+        }
+        
+        function verProducto(id) {
+            window.location.href = `producto.html?id=${id}`;
+        }
+        
+        // Cargar productos iniciales
+        renderProductos(productos);
+    </script>
+</body>
+</html>
+

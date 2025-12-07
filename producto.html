@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista de Producto - Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .product-detail {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .product-images {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .main-image {
+            width: 100%;
+            height: 400px;
+            background: #ecf0f1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        
+        .product-info h1 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .product-sku {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+        
+        .product-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+        
+        .availability-section {
+            background: #ecf0f1;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .provider-list {
+            margin-top: 1rem;
+        }
+        
+        .provider-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .provider-info {
+            flex: 1;
+        }
+        
+        .provider-name {
+            font-weight: 600;
+        }
+        
+        .provider-location {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .specs-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .specs-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .specs-table td:first-child {
+            font-weight: 600;
+            width: 200px;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: #ecf0f1;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏗️ Marketplace de Materiales</h1>
+    </div>
+    
+    <div class="container">
+        <div class="nav-actions" style="margin-bottom: 1rem;">
+            <a href="index.html" class="nav-btn">← Volver a Búsqueda</a>
+        </div>
+        
+        <div class="product-detail">
+            <div class="product-images">
+                <div class="main-image">📦</div>
+            </div>
+            
+            <div class="product-info">
+                <h1 id="productName">Cemento Portland 50kg</h1>
+                <div class="product-sku" id="productSku">SKU: CEM-PORT-50</div>
+                <div class="product-price" id="productPrice">$8,500</div>
+                
+                <div class="availability-section">
+                    <h3>Disponibilidad</h3>
+                    <div class="provider-list" id="providerList">
+                        <!-- Proveedores se cargarán aquí -->
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="agregarAlCarrito()">Agregar al Carrito</button>
+                    <button class="btn btn-secondary" onclick="agregarALista()">Agregar a Lista</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="specs-section">
+            <h2>Especificaciones Técnicas</h2>
+            <table class="specs-table">
+                <tr>
+                    <td>Categoría</td>
+                    <td>Cementos</td>
+                </tr>
+                <tr>
+                    <td>Marca</td>
+                    <td>Portland Standard</td>
+                </tr>
+                <tr>
+                    <td>Peso</td>
+                    <td>50 kg</td>
+                </tr>
+                <tr>
+                    <td>Unidad de Medida</td>
+                    <td>Saco</td>
+                </tr>
+                <tr>
+                    <td>Norma</td>
+                    <td>NCh 148 Of.68</td>
+                </tr>
+                <tr>
+                    <td>Origen</td>
+                    <td>Nacional</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        // Datos de ejemplo del producto
+        const producto = {
+            id: 1,
+            nombre: "Cemento Portland 50kg",
+            sku: "CEM-PORT-50",
+            precio: 8500,
+            proveedores: [
+                {
+                    nombre: "Materiales ABC",
+                    distancia: "2.5 km",
+                    stock: 150,
+                    disponible: true,
+                    leadTime: "2 horas"
+                },
+                {
+                    nombre: "Construcciones XYZ",
+                    distancia: "5.1 km",
+                    stock: 80,
+                    disponible: true,
+                    leadTime: "4 horas"
+                }
+            ]
+        };
+        
+        function renderProveedores() {
+            const list = document.getElementById('providerList');
+            list.innerHTML = producto.proveedores.map(prov => `
+                <div class="provider-item">
+                    <div class="provider-info">
+                        <div class="provider-name">${prov.nombre}</div>
+                        <div class="provider-location">📍 ${prov.distancia} • Stock: ${prov.stock} • ETA: ${prov.leadTime}</div>
+                    </div>
+                    <span style="color: #27ae60; font-weight: 600;">✓ Disponible</span>
+                </div>
+            `).join('');
+        }
+        
+        function agregarAlCarrito() {
+            alert('Producto agregado al carrito');
+            window.location.href = 'carrito.html';
+        }
+        
+        function agregarALista() {
+            alert('Selecciona una lista o crea una nueva');
+            window.location.href = 'lista-materiales.html';
+        }
+        
+        // Cargar datos del producto
+        document.getElementById('productName').textContent = producto.nombre;
+        document.getElementById('productSku').textContent = `SKU: ${producto.sku}`;
+        document.getElementById('productPrice').textContent = `$${producto.precio.toLocaleString()}`;
+        renderProveedores();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras - Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .cart-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 2fr 1fr 150px 100px;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #ecf0f1;
+            align-items: center;
+        }
+        
+        .item-image {
+            width: 100px;
+            height: 100px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .item-info h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .item-info p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            padding: 0.5rem;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .item-price {
+            font-weight: 600;
+            color: #27ae60;
+        }
+        
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .summary-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .summary-row.total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-top: 2px solid #2c3e50;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: #ecf0f1;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏗️ Marketplace de Materiales</h1>
+    </div>
+    
+    <div class="container">
+        <div class="nav-actions">
+            <a href="index.html" class="nav-btn">← Continuar Comprando</a>
+        </div>
+        
+        <div class="cart-section">
+            <h2>Carrito de Compras</h2>
+            <div id="cartItems">
+                <!-- Items del carrito se cargarán aquí -->
+            </div>
+        </div>
+        
+        <div class="summary-section">
+            <h2>Resumen del Pedido</h2>
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="subtotal">$0</span>
+            </div>
+            <div class="summary-row">
+                <span>Envío (estimado)</span>
+                <span id="envio">$5,000</span>
+            </div>
+            <div class="summary-row">
+                <span>Impuestos</span>
+                <span id="impuestos">$0</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total</span>
+                <span id="total">$0</span>
+            </div>
+            
+            <button class="btn btn-primary" onclick="procederCheckout()">Proceder al Checkout</button>
+        </div>
+    </div>
+    
+    <script>
+        // Datos de ejemplo del carrito
+        const carrito = [
+            {
+                id: 1,
+                nombre: "Cemento Portland 50kg",
+                sku: "CEM-PORT-50",
+                precio: 8500,
+                cantidad: 10,
+                proveedor: "Materiales ABC"
+            },
+            {
+                id: 2,
+                nombre: "Ladrillos Fiscales x1000",
+                sku: "LAD-FIS-1000",
+                precio: 45000,
+                cantidad: 2,
+                proveedor: "Construcciones XYZ"
+            },
+            {
+                id: 3,
+                nombre: "Pintura Latex 20L",
+                sku: "PIN-LAT-20",
+                precio: 32000,
+                cantidad: 1,
+                proveedor: "Obra San Martín"
+            }
+        ];
+        
+        function renderCarrito() {
+            const container = document.getElementById('cartItems');
+            container.innerHTML = carrito.map(item => `
+                <div class="cart-item">
+                    <div class="item-image">📦</div>
+                    <div class="item-info">
+                        <h3>${item.nombre}</h3>
+                        <p>SKU: ${item.sku}</p>
+                        <p>Proveedor: ${item.proveedor}</p>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="decrementar(${item.id})">-</button>
+                        <input type="number" class="quantity-input" value="${item.cantidad}" min="1" onchange="actualizarCantidad(${item.id}, this.value)">
+                        <button class="quantity-btn" onclick="incrementar(${item.id})">+</button>
+                    </div>
+                    <div class="item-price">$${(item.precio * item.cantidad).toLocaleString()}</div>
+                    <button class="remove-btn" onclick="eliminar(${item.id})">Eliminar</button>
+                </div>
+            `).join('');
+            actualizarResumen();
+        }
+        
+        function actualizarResumen() {
+            const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+            const envio = 5000;
+            const impuestos = subtotal * 0.19; // IVA 19%
+            const total = subtotal + envio + impuestos;
+            
+            document.getElementById('subtotal').textContent = `$${subtotal.toLocaleString()}`;
+            document.getElementById('envio').textContent = `$${envio.toLocaleString()}`;
+            document.getElementById('impuestos').textContent = `$${Math.round(impuestos).toLocaleString()}`;
+            document.getElementById('total').textContent = `$${Math.round(total).toLocaleString()}`;
+        }
+        
+        function incrementar(id) {
+            const item = carrito.find(i => i.id === id);
+            if (item) {
+                item.cantidad++;
+                renderCarrito();
+            }
+        }
+        
+        function decrementar(id) {
+            const item = carrito.find(i => i.id === id);
+            if (item && item.cantidad > 1) {
+                item.cantidad--;
+                renderCarrito();
+            }
+        }
+        
+        function actualizarCantidad(id, cantidad) {
+            const item = carrito.find(i => i.id === id);
+            if (item) {
+                item.cantidad = parseInt(cantidad) || 1;
+                renderCarrito();
+            }
+        }
+        
+        function eliminar(id) {
+            const index = carrito.findIndex(i => i.id === id);
+            if (index > -1) {
+                carrito.splice(index, 1);
+                renderCarrito();
+            }
+        }
+        
+        function procederCheckout() {
+            window.location.href = 'checkout.html';
+        }
+        
+        // Cargar carrito inicial
+        renderCarrito();
+    </script>
+</body>
+</html>
+

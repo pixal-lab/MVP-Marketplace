@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .checkout-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step.active {
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        .step::after {
+            content: '→';
+            position: absolute;
+            right: -50%;
+            top: 0;
+            color: #bdc3c7;
+        }
+        
+        .step:last-child::after {
+            display: none;
+        }
+        
+        .checkout-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+        
+        .address-options {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .address-option {
+            border: 2px solid #ecf0f1;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        
+        .address-option:hover {
+            border-color: #3498db;
+        }
+        
+        .address-option.selected {
+            border-color: #3498db;
+            background: #ebf5fb;
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .time-slot {
+            border: 2px solid #ecf0f1;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        
+        .time-slot:hover {
+            border-color: #3498db;
+        }
+        
+        .time-slot.selected {
+            border-color: #3498db;
+            background: #ebf5fb;
+        }
+        
+        .summary-box {
+            background: #ecf0f1;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+        }
+        
+        .summary-row.total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-top: 2px solid #2c3e50;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏗️ Marketplace de Materiales</h1>
+    </div>
+    
+    <div class="container">
+        <div class="checkout-steps">
+            <div class="step active">1. Dirección</div>
+            <div class="step">2. Horario</div>
+            <div class="step">3. Resumen</div>
+            <div class="step">4. Confirmación</div>
+        </div>
+        
+        <div class="checkout-section" id="direccionSection">
+            <h2 class="section-title">Seleccionar Dirección de Entrega</h2>
+            <div class="address-options">
+                <div class="address-option selected" onclick="seleccionarDireccion(this, 'Obra Principal')">
+                    <strong>Obra Principal</strong><br>
+                    Av. Providencia 1234, Santiago<br>
+                    📍 2.5 km del proveedor más cercano
+                </div>
+                <div class="address-option" onclick="seleccionarDireccion(this, 'Bodega')">
+                    <strong>Bodega</strong><br>
+                    Calle Los Aromos 567, Maipú<br>
+                    📍 8.2 km del proveedor más cercano
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="siguientePaso('horario')" style="margin-top: 1rem;">Continuar</button>
+        </div>
+        
+        <div class="checkout-section" id="horarioSection" style="display: none;">
+            <h2 class="section-title">Seleccionar Horario de Entrega</h2>
+            <div class="time-slots">
+                <div class="time-slot" onclick="seleccionarHorario(this, 'ASAP')">
+                    <strong>Lo antes posible</strong><br>
+                    <small>2-3 horas</small>
+                </div>
+                <div class="time-slot selected" onclick="seleccionarHorario(this, 'Hoy 14:00-16:00')">
+                    <strong>Hoy</strong><br>
+                    <small>14:00 - 16:00</small>
+                </div>
+                <div class="time-slot" onclick="seleccionarHorario(this, 'Hoy 16:00-18:00')">
+                    <strong>Hoy</strong><br>
+                    <small>16:00 - 18:00</small>
+                </div>
+                <div class="time-slot" onclick="seleccionarHorario(this, 'Mañana 09:00-12:00')">
+                    <strong>Mañana</strong><br>
+                    <small>09:00 - 12:00</small>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="siguientePaso('resumen')" style="margin-top: 1rem;">Continuar</button>
+            <button class="btn btn-secondary" onclick="anteriorPaso('direccion')">Atrás</button>
+        </div>
+        
+        <div class="checkout-section" id="resumenSection" style="display: none;">
+            <h2 class="section-title">Resumen del Pedido</h2>
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>Dirección:</span>
+                    <span id="resumenDireccion">Obra Principal</span>
+                </div>
+                <div class="summary-row">
+                    <span>Horario:</span>
+                    <span id="resumenHorario">Hoy 14:00-16:00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>$125,000</span>
+                </div>
+                <div class="summary-row">
+                    <span>Envío:</span>
+                    <span>$5,000</span>
+                </div>
+                <div class="summary-row">
+                    <span>Impuestos:</span>
+                    <span>$24,700</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span>$154,700</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="confirmarPedido()">Confirmar Pedido</button>
+            <button class="btn btn-secondary" onclick="anteriorPaso('horario')">Atrás</button>
+        </div>
+        
+        <div class="checkout-section" id="confirmacionSection" style="display: none;">
+            <h2 class="section-title">✅ Pedido Confirmado</h2>
+            <p style="margin-bottom: 1rem;">Tu pedido ha sido confirmado exitosamente.</p>
+            <p style="margin-bottom: 1rem;"><strong>Número de pedido:</strong> #ORD-2024-001234</p>
+            <p style="margin-bottom: 2rem;">Recibirás notificaciones sobre el estado de tu pedido.</p>
+            <button class="btn btn-primary" onclick="verSeguimiento()">Ver Seguimiento</button>
+        </div>
+    </div>
+    
+    <script>
+        let direccionSeleccionada = 'Obra Principal';
+        let horarioSeleccionado = 'Hoy 14:00-16:00';
+        
+        function seleccionarDireccion(element, direccion) {
+            document.querySelectorAll('.address-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            direccionSeleccionada = direccion;
+        }
+        
+        function seleccionarHorario(element, horario) {
+            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+            element.classList.add('selected');
+            horarioSeleccionado = horario;
+        }
+        
+        function siguientePaso(paso) {
+            document.getElementById('direccionSection').style.display = 'none';
+            document.getElementById('horarioSection').style.display = 'none';
+            document.getElementById('resumenSection').style.display = 'none';
+            document.getElementById('confirmacionSection').style.display = 'none';
+            
+            if (paso === 'horario') {
+                document.getElementById('horarioSection').style.display = 'block';
+            } else if (paso === 'resumen') {
+                document.getElementById('resumenSection').style.display = 'block';
+                document.getElementById('resumenDireccion').textContent = direccionSeleccionada;
+                document.getElementById('resumenHorario').textContent = horarioSeleccionado;
+            }
+        }
+        
+        function anteriorPaso(paso) {
+            document.getElementById('direccionSection').style.display = 'none';
+            document.getElementById('horarioSection').style.display = 'none';
+            document.getElementById('resumenSection').style.display = 'none';
+            
+            if (paso === 'direccion') {
+                document.getElementById('direccionSection').style.display = 'block';
+            } else if (paso === 'horario') {
+                document.getElementById('horarioSection').style.display = 'block';
+            }
+        }
+        
+        function confirmarPedido() {
+            document.getElementById('resumenSection').style.display = 'none';
+            document.getElementById('confirmacionSection').style.display = 'block';
+        }
+        
+        function verSeguimiento() {
+            window.location.href = 'seguimiento.html';
+        }
+    </script>
+</body>
+</html>
+
