@@ -74,38 +74,232 @@
             margin-bottom: 1rem;
         }
         
-        .availability-section {
-            background: #ecf0f1;
-            padding: 1rem;
+        .comparison-section {
+            background: white;
+            padding: 2rem;
             border-radius: 8px;
-            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
         }
         
-        .provider-list {
-            margin-top: 1rem;
-        }
-        
-        .provider-item {
+        .comparison-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
         }
         
-        .provider-info {
+        .sort-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .sort-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .sort-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .providers-comparison {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .provider-card {
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .provider-card:hover {
+            border-color: #3498db;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+        }
+        
+        .provider-card.selected {
+            border-color: #27ae60;
+            background: #f0f9f4;
+        }
+        
+        .provider-card.recommended {
+            border-color: #f39c12;
+            background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+        }
+        
+        .provider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .provider-name-section {
             flex: 1;
         }
         
         .provider-name {
             font-weight: 600;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
-        .provider-location {
-            font-size: 0.9rem;
+        .recommended-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: #f39c12;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .provider-comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .comparison-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .comparison-label {
+            font-size: 0.85rem;
             color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .comparison-value {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #2c3e50;
+        }
+        
+        .comparison-value.price {
+            color: #27ae60;
+            font-size: 1.2rem;
+        }
+        
+        .comparison-value.time {
+            color: #3498db;
+        }
+        
+        .comparison-value.distance {
+            color: #7f8c8d;
+        }
+        
+        .stock-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .stock-high {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .stock-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .stock-low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .stock-excedente {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .provider-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .btn-select {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #3498db;
+            background: white;
+            color: #3498db;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-select:hover {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-select.selected {
+            background: #27ae60;
+            border-color: #27ae60;
+            color: white;
+        }
+        
+        .selection-summary {
+            background: #ecf0f1;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            display: none;
+        }
+        
+        .selection-summary.active {
+            display: block;
+        }
+        
+        .selected-providers {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .selected-provider-tag {
+            background: #27ae60;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .remove-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
         }
         
         .actions {
@@ -199,18 +393,37 @@
             <div class="product-info">
                 <h1 id="productName">Cemento Portland 50kg</h1>
                 <div class="product-sku" id="productSku">SKU: CEM-PORT-50</div>
-                <div class="product-price" id="productPrice">$8,500</div>
-                
-                <div class="availability-section">
-                    <h3>Disponibilidad</h3>
-                    <div class="provider-list" id="providerList">
-                        <!-- Proveedores se cargarán aquí -->
-                    </div>
-                </div>
+                <div class="product-price" id="productPrice">Desde $8,200</div>
                 
                 <div class="actions">
                     <button class="btn btn-primary" onclick="agregarAlCarrito()">Agregar al Carrito</button>
                     <button class="btn btn-secondary" onclick="agregarALista()">Agregar a Lista</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-section">
+            <div class="comparison-header">
+                <h2>Comparar Proveedores</h2>
+                <div class="sort-options">
+                    <button class="sort-btn" data-sort="precio" onclick="ordenarProveedores('precio', this)">Por Precio</button>
+                    <button class="sort-btn" data-sort="tiempo" onclick="ordenarProveedores('tiempo', this)">Por Tiempo</button>
+                    <button class="sort-btn active" data-sort="recomendado" onclick="ordenarProveedores('recomendado', this)">Recomendado</button>
+                    <button class="sort-btn" data-sort="distancia" onclick="ordenarProveedores('distancia', this)">Por Distancia</button>
+                </div>
+            </div>
+            
+            <div class="providers-comparison" id="providersComparison">
+                <!-- Proveedores se cargarán aquí -->
+            </div>
+            
+            <div class="selection-summary" id="selectionSummary">
+                <h3>Proveedores Seleccionados</h3>
+                <div class="selected-providers" id="selectedProviders">
+                    <!-- Proveedores seleccionados -->
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button class="btn btn-primary" onclick="agregarSeleccionadosAlCarrito()">Agregar Seleccionados al Carrito</button>
                 </div>
             </div>
         </div>
@@ -247,41 +460,236 @@
     </div>
     
     <script>
-        // Datos de ejemplo del producto
+        // Datos de ejemplo del producto con información comparativa
         const producto = {
             id: 1,
             nombre: "Cemento Portland 50kg",
             sku: "CEM-PORT-50",
-            precio: 8500,
             proveedores: [
                 {
+                    id: 1,
                     nombre: "Materiales ABC",
-                    distancia: "2.5 km",
+                    precio: 8200,
+                    distancia: 2.5,
+                    distanciaTexto: "2.5 km",
                     stock: 150,
                     disponible: true,
-                    leadTime: "2 horas"
+                    leadTime: 2,
+                    leadTimeTexto: "2 horas",
+                    eta: "2-3 horas",
+                    tipoStock: "nuevo",
+                    condicion: "nuevo",
+                    sucursal: "Centro",
+                    calificacion: 4.8,
+                    recomendado: true,
+                    razonRecomendacion: "Mejor precio y tiempo de entrega"
                 },
                 {
+                    id: 2,
                     nombre: "Construcciones XYZ",
-                    distancia: "5.1 km",
+                    precio: 8500,
+                    distancia: 5.1,
+                    distanciaTexto: "5.1 km",
                     stock: 80,
                     disponible: true,
-                    leadTime: "4 horas"
+                    leadTime: 4,
+                    leadTimeTexto: "4 horas",
+                    eta: "4-5 horas",
+                    tipoStock: "nuevo",
+                    condicion: "nuevo",
+                    sucursal: "Norte",
+                    calificacion: 4.5,
+                    recomendado: false
+                },
+                {
+                    id: 3,
+                    nombre: "Materiales Premium",
+                    precio: 8800,
+                    distancia: 3.2,
+                    distanciaTexto: "3.2 km",
+                    stock: 200,
+                    disponible: true,
+                    leadTime: 3,
+                    leadTimeTexto: "3 horas",
+                    eta: "3-4 horas",
+                    tipoStock: "nuevo",
+                    condicion: "nuevo",
+                    sucursal: "Sur",
+                    calificacion: 4.9,
+                    recomendado: false
+                },
+                {
+                    id: 4,
+                    nombre: "Obra San Martín (Excedente)",
+                    precio: 6500,
+                    distancia: 1.8,
+                    distanciaTexto: "1.8 km",
+                    stock: 5,
+                    disponible: true,
+                    leadTime: 1,
+                    leadTimeTexto: "1 hora",
+                    eta: "1-2 horas",
+                    tipoStock: "excedente",
+                    condicion: "abierto",
+                    porcentaje: 75,
+                    sucursal: "Centro",
+                    calificacion: 4.2,
+                    recomendado: false,
+                    razonRecomendacion: "Excelente precio (excedente)"
                 }
             ]
         };
         
+        let proveedoresOrdenados = [...producto.proveedores];
+        let proveedoresSeleccionados = [];
+        let ordenActual = 'recomendado';
+        
+        function ordenarProveedores(criterio, buttonElement) {
+            ordenActual = criterio;
+            
+            // Actualizar botones de ordenamiento
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            } else {
+                document.querySelector(`[data-sort="${criterio}"]`)?.classList.add('active');
+            }
+            
+            switch(criterio) {
+                case 'precio':
+                    proveedoresOrdenados = [...producto.proveedores].sort((a, b) => a.precio - b.precio);
+                    break;
+                case 'tiempo':
+                    proveedoresOrdenados = [...producto.proveedores].sort((a, b) => a.leadTime - b.leadTime);
+                    break;
+                case 'distancia':
+                    proveedoresOrdenados = [...producto.proveedores].sort((a, b) => a.distancia - b.distancia);
+                    break;
+                case 'recomendado':
+                default:
+                    proveedoresOrdenados = [...producto.proveedores].sort((a, b) => {
+                        if (a.recomendado && !b.recomendado) return -1;
+                        if (!a.recomendado && b.recomendado) return 1;
+                        return (b.calificacion * 1000 + (1000 - b.precio)) - (a.calificacion * 1000 + (1000 - a.precio));
+                    });
+                    break;
+            }
+            
+            renderProveedores();
+        }
+        
         function renderProveedores() {
-            const list = document.getElementById('providerList');
-            list.innerHTML = producto.proveedores.map(prov => `
-                <div class="provider-item">
-                    <div class="provider-info">
-                        <div class="provider-name">${prov.nombre}</div>
-                        <div class="provider-location">📍 ${prov.distancia} • Stock: ${prov.stock} • ETA: ${prov.leadTime}</div>
+            const container = document.getElementById('providersComparison');
+            const precioMinimo = Math.min(...producto.proveedores.map(p => p.precio));
+            
+            container.innerHTML = proveedoresOrdenados.map(prov => {
+                const estaSeleccionado = proveedoresSeleccionados.some(p => p.id === prov.id);
+                const stockClass = prov.stock > 100 ? 'stock-high' : prov.stock > 50 ? 'stock-medium' : 'stock-low';
+                const stockClassExcedente = 'stock-excedente';
+                
+                return `
+                    <div class="provider-card ${prov.recomendado ? 'recommended' : ''} ${estaSeleccionado ? 'selected' : ''}" 
+                         onclick="toggleSeleccion(${prov.id})">
+                        <div class="provider-header">
+                            <div class="provider-name-section">
+                                <div class="provider-name">
+                                    ${prov.nombre}
+                                    ${prov.recomendado ? '<span class="recommended-badge">⭐ Recomendado</span>' : ''}
+                                </div>
+                                ${prov.recomendado && prov.razonRecomendacion ? 
+                                    `<div style="font-size: 0.85rem; color: #f39c12; margin-top: 0.25rem;">${prov.razonRecomendacion}</div>` : ''}
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="comparison-value price">$${prov.precio.toLocaleString()}</div>
+                                ${prov.precio === precioMinimo ? '<div style="font-size: 0.75rem; color: #27ae60;">Mejor precio</div>' : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="provider-comparison-grid">
+                            <div class="comparison-item">
+                                <div class="comparison-label">⏱️ Tiempo de Entrega</div>
+                                <div class="comparison-value time">${prov.eta}</div>
+                                <div style="font-size: 0.8rem; color: #666;">Lead: ${prov.leadTimeTexto}</div>
+                            </div>
+                            
+                            <div class="comparison-item">
+                                <div class="comparison-label">📍 Distancia</div>
+                                <div class="comparison-value distance">${prov.distanciaTexto}</div>
+                                <div style="font-size: 0.8rem; color: #666;">${prov.sucursal}</div>
+                            </div>
+                            
+                            <div class="comparison-item">
+                                <div class="comparison-label">📦 Stock Disponible</div>
+                                <div>
+                                    <span class="stock-badge ${prov.tipoStock === 'excedente' ? stockClassExcedente : stockClass}">
+                                        ${prov.stock} unidades
+                                    </span>
+                                </div>
+                                ${prov.tipoStock === 'excedente' ? 
+                                    `<div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem;">${prov.porcentaje}% restante</div>` : ''}
+                            </div>
+                            
+                            <div class="comparison-item">
+                                <div class="comparison-label">⭐ Calificación</div>
+                                <div class="comparison-value">${prov.calificacion}/5.0</div>
+                                <div style="font-size: 0.8rem; color: #666;">${prov.tipoStock === 'excedente' ? 'Excedente' : 'Nuevo'}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="provider-actions">
+                            <button class="btn-select ${estaSeleccionado ? 'selected' : ''}" 
+                                    onclick="event.stopPropagation(); toggleSeleccion(${prov.id})">
+                                ${estaSeleccionado ? '✓ Seleccionado' : 'Seleccionar'}
+                            </button>
+                        </div>
                     </div>
-                    <span style="color: #27ae60; font-weight: 600;">✓ Disponible</span>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+            
+            actualizarResumenSeleccion();
+        }
+        
+        function toggleSeleccion(proveedorId) {
+            const index = proveedoresSeleccionados.findIndex(p => p.id === proveedorId);
+            
+            if (index > -1) {
+                proveedoresSeleccionados.splice(index, 1);
+            } else {
+                const proveedor = producto.proveedores.find(p => p.id === proveedorId);
+                if (proveedor) {
+                    proveedoresSeleccionados.push(proveedor);
+                }
+            }
+            
+            renderProveedores();
+        }
+        
+        function actualizarResumenSeleccion() {
+            const summary = document.getElementById('selectionSummary');
+            const container = document.getElementById('selectedProviders');
+            
+            if (proveedoresSeleccionados.length > 0) {
+                summary.classList.add('active');
+                container.innerHTML = proveedoresSeleccionados.map(prov => `
+                    <div class="selected-provider-tag">
+                        <span>${prov.nombre}</span>
+                        <span>$${prov.precio.toLocaleString()}</span>
+                        <button class="remove-btn" onclick="toggleSeleccion(${prov.id})">×</button>
+                    </div>
+                `).join('');
+            } else {
+                summary.classList.remove('active');
+            }
+        }
+        
+        function agregarSeleccionadosAlCarrito() {
+            if (proveedoresSeleccionados.length === 0) {
+                alert('Por favor selecciona al menos un proveedor');
+                return;
+            }
+            
+            alert(`${proveedoresSeleccionados.length} proveedor(es) agregado(s) al carrito`);
+            window.location.href = 'carrito.html';
         }
         
         function agregarAlCarrito() {
@@ -297,8 +705,9 @@
         // Cargar datos del producto
         document.getElementById('productName').textContent = producto.nombre;
         document.getElementById('productSku').textContent = `SKU: ${producto.sku}`;
-        document.getElementById('productPrice').textContent = `$${producto.precio.toLocaleString()}`;
-        renderProveedores();
+        
+        // Inicializar con orden recomendado
+        ordenarProveedores('recomendado');
     </script>
 </body>
 </html>
