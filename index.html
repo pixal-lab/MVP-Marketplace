@@ -209,6 +209,40 @@
             color: #856404;
         }
         
+        .express-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 4px rgba(243, 156, 18, 0.3);
+        }
+        
+        .express-cost {
+            font-size: 0.75rem;
+            color: #e67e22;
+            margin-top: 0.25rem;
+            font-weight: 600;
+        }
+        
+        .product-card.express-available {
+            border: 2px solid #f39c12;
+            position: relative;
+        }
+        
+        .product-card.express-available::before {
+            content: '⚡';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
         .nav-actions {
             display: flex;
             gap: 1rem;
@@ -380,7 +414,12 @@
                     { nombre: "Obra San Martín (Excedente)", precio: 6500, distancia: 1.8 }
                 ],
                 disponible: "disponible",
-                tipo: "nuevo"
+                tipo: "nuevo",
+                envioExpress: {
+                    disponible: true,
+                    costoAdicional: 2500,
+                    tiempoEntrega: "1-2 horas"
+                }
             },
             {
                 id: 2,
@@ -404,7 +443,12 @@
                     { nombre: "Obra San Martín (Excedente)", precio: 24000, distancia: 1.8 }
                 ],
                 disponible: "disponible",
-                tipo: "nuevo"
+                tipo: "nuevo",
+                envioExpress: {
+                    disponible: true,
+                    costoAdicional: 3500,
+                    tiempoEntrega: "1-2 horas"
+                }
             },
             {
                 id: 4,
@@ -449,9 +493,10 @@
                 const stats = calcularEstadisticas(producto);
                 const precioUnico = stats.precioMin === stats.precioMax;
                 const distanciaUnica = stats.distanciaMin === stats.distanciaMax;
+                const tieneExpress = producto.envioExpress && producto.envioExpress.disponible;
                 
                 return `
-                <div class="product-card" onclick="verProducto(${producto.id})">
+                <div class="product-card ${tieneExpress ? 'express-available' : ''}" onclick="verProducto(${producto.id})">
                     <div class="product-image">📦 Imagen del Producto</div>
                     <div class="product-title">${producto.nombre}</div>
                     <div class="product-info">SKU: ${producto.sku}</div>
@@ -472,7 +517,16 @@
                         </div>`
                     }
                     
-                    <div>
+                    ${tieneExpress ? `
+                        <div class="express-badge">
+                            ⚡ Envío Express
+                        </div>
+                        <div class="express-cost">
+                            +$${producto.envioExpress.costoAdicional.toLocaleString()} • ${producto.envioExpress.tiempoEntrega}
+                        </div>
+                    ` : ''}
+                    
+                    <div style="margin-top: ${tieneExpress ? '0.5rem' : '0'}">
                         <span class="product-availability ${producto.disponible}">
                             ${producto.disponible === 'disponible' ? '✓ Disponible' : '⚠ Parcial'}
                         </span>
