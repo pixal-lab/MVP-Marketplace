@@ -264,6 +264,65 @@
             background: #bdc3c7;
         }
         
+        .categories-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .categories-title {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+        
+        .category-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 1rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            background: white;
+        }
+        
+        .category-card:hover {
+            border-color: #3498db;
+            background: #ebf5fb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+        }
+        
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+        
+        .category-count {
+            font-size: 0.75rem;
+            color: #7f8c8d;
+            margin-top: 0.25rem;
+        }
+        
         /* Responsive Styles */
         @media (max-width: 768px) {
             .header {
@@ -332,6 +391,27 @@
             .product-image {
                 height: 150px;
             }
+            
+            .categories-section {
+                padding: 1rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 0.75rem;
+            }
+            
+            .category-card {
+                padding: 1rem 0.5rem;
+            }
+            
+            .category-icon {
+                font-size: 1.5rem;
+            }
+            
+            .category-name {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
@@ -376,6 +456,13 @@
                         <option value="distancia">Distancia</option>
                     </select>
                 </div>
+            </div>
+        </div>
+        
+        <div class="categories-section">
+            <h3 class="categories-title">Explorar por Categoría</h3>
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Categorías se cargarán aquí -->
             </div>
         </div>
         
@@ -551,8 +638,43 @@
             window.location.href = `producto.html?id=${id}`;
         }
         
+        // Categorías disponibles
+        const categorias = [
+            { id: 'cementos', nombre: 'Cementos', icono: '🧱', count: 12 },
+            { id: 'ladrillos', nombre: 'Ladrillos', icono: '🧱', count: 8 },
+            { id: 'pinturas', nombre: 'Pinturas', icono: '🎨', count: 15 },
+            { id: 'arenas', nombre: 'Arenas y Áridos', icono: '🏜️', count: 10 },
+            { id: 'hierros', nombre: 'Hierros y Aceros', icono: '🔩', count: 20 },
+            { id: 'maderas', nombre: 'Maderas', icono: '🪵', count: 18 },
+            { id: 'ceramicas', nombre: 'Cerámicas', icono: '🏺', count: 14 },
+            { id: 'electricidad', nombre: 'Electricidad', icono: '⚡', count: 25 },
+            { id: 'plomeria', nombre: 'Plomería', icono: '🚿', count: 16 },
+            { id: 'techos', nombre: 'Techos', icono: '🏠', count: 9 },
+            { id: 'pisos', nombre: 'Pisos', icono: '🔲', count: 12 },
+            { id: 'otros', nombre: 'Otros', icono: '📦', count: 30 }
+        ];
+        
+        function renderCategorias() {
+            const grid = document.getElementById('categoriesGrid');
+            grid.innerHTML = categorias.map(categoria => `
+                <div class="category-card" onclick="filtrarPorCategoria('${categoria.id}')">
+                    <div class="category-icon">${categoria.icono}</div>
+                    <div class="category-name">${categoria.nombre}</div>
+                    <div class="category-count">${categoria.count} productos</div>
+                </div>
+            `).join('');
+        }
+        
+        function filtrarPorCategoria(categoriaId) {
+            // En producción, esto filtraría los productos por categoría
+            document.getElementById('searchInput').value = categorias.find(c => c.id === categoriaId)?.nombre || '';
+            buscar();
+            alert(`Buscando productos de la categoría: ${categorias.find(c => c.id === categoriaId)?.nombre}\n\nEn producción, esto filtraría los resultados por categoría.`);
+        }
+        
         // Cargar productos iniciales
         renderProductos(productos);
+        renderCategorias();
     </script>
 </body>
 </html>
