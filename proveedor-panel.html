@@ -337,6 +337,125 @@
             display: inline-block;
         }
         
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-header h2 {
+            color: #2c3e50;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #ecf0f1;
+        }
+        
+        .section-form {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-form h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .stock-sucursal {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            align-items: end;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 4px;
+        }
+        
         /* Responsive Styles */
         @media (max-width: 768px) {
             .header {
@@ -433,6 +552,19 @@
             .section-title {
                 font-size: 1.1rem;
             }
+            
+            .modal-content {
+                width: 95%;
+                padding: 1rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .stock-sucursal {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -487,6 +619,7 @@
                 <div class="section-header">
                     <h2 class="section-title">Gestión de Inventario por Sucursal</h2>
                     <div>
+                        <button class="btn btn-success btn-small" onclick="abrirModalAgregarMaterial()">+ Agregar Material</button>
                         <button class="btn btn-primary btn-small" onclick="sincronizarStock()">Sincronizar Stock</button>
                         <button class="btn btn-secondary btn-small" onclick="cargarExcel()">Cargar Excel/CSV</button>
                         <button class="btn btn-secondary btn-small" onclick="configurarSincronizacion()">Configurar API</button>
@@ -590,6 +723,193 @@
                     <!-- Diferencias se cargarán aquí -->
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <!-- Modal para agregar material -->
+    <div class="modal" id="modalAgregarMaterial">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Agregar Nuevo Material al Inventario</h2>
+                <button class="close-btn" onclick="cerrarModalAgregarMaterial()">×</button>
+            </div>
+            
+            <form id="formAgregarMaterial">
+                <!-- Datos Básicos (RF-INV-1) -->
+                <div class="section-form">
+                    <h3>📋 Datos Básicos del SKU</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>SKU / Código UPC *</label>
+                            <input type="text" id="skuNuevo" required placeholder="Ej: CEM-PORT-50">
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre del Producto *</label>
+                            <input type="text" id="nombreNuevo" required placeholder="Ej: Cemento Portland 50kg">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Categoría *</label>
+                            <select id="categoriaNuevo" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="cementos">Cementos</option>
+                                <option value="ladrillos">Ladrillos</option>
+                                <option value="pinturas">Pinturas</option>
+                                <option value="arenas">Arenas y Áridos</option>
+                                <option value="hierros">Hierros y Aceros</option>
+                                <option value="maderas">Maderas</option>
+                                <option value="ceramicas">Cerámicas</option>
+                                <option value="otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Subcategoría</label>
+                            <input type="text" id="subcategoriaNuevo" placeholder="Opcional">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Marca *</label>
+                            <input type="text" id="marcaNuevo" required placeholder="Ej: Portland Standard">
+                        </div>
+                        <div class="form-group">
+                            <label>Condición *</label>
+                            <select id="condicionNuevo" required>
+                                <option value="nuevo">Nuevo</option>
+                                <option value="abierto">Abierto</option>
+                                <option value="parcial">Parcial</option>
+                                <option value="dañado">Dañado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Descripción Comercial</label>
+                        <textarea id="descripcionNuevo" placeholder="Descripción del producto para los clientes..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- Especificaciones Técnicas (RF-INV-2) -->
+                <div class="section-form">
+                    <h3>⚙️ Especificaciones Técnicas</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Dimensiones (Largo x Ancho x Alto cm)</label>
+                            <input type="text" id="dimensionesNuevo" placeholder="Ej: 50 x 30 x 20">
+                        </div>
+                        <div class="form-group">
+                            <label>Peso (kg) *</label>
+                            <input type="number" id="pesoNuevo" required step="0.01" placeholder="Ej: 50">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Unidad de Medida *</label>
+                            <select id="unidadNuevo" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="unidad">Unidad</option>
+                                <option value="saco">Saco</option>
+                                <option value="caja">Caja</option>
+                                <option value="m2">m² (metro cuadrado)</option>
+                                <option value="m3">m³ (metro cúbico)</option>
+                                <option value="kg">kg (kilogramo)</option>
+                                <option value="l">L (litro)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Cantidad por Paquete</label>
+                            <input type="number" id="cantidadPaqueteNuevo" step="0.01" placeholder="Ej: 1">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Norma / Certificación</label>
+                            <input type="text" id="normaNuevo" placeholder="Ej: NCh 148 Of.68">
+                        </div>
+                        <div class="form-group">
+                            <label>Origen</label>
+                            <select id="origenNuevo">
+                                <option value="nacional">Nacional</option>
+                                <option value="importado">Importado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Lote (opcional)</label>
+                            <input type="text" id="loteNuevo" placeholder="Número de lote">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Fabricación</label>
+                            <input type="date" id="fechaFabricacionNuevo">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stock Inicial por Sucursal (RF-INV-7, RF-INV-8) -->
+                <div class="section-form">
+                    <h3>📦 Stock Inicial por Sucursal</h3>
+                    <div id="stockSucursales">
+                        <div class="stock-sucursal">
+                            <div class="form-group">
+                                <label>Sucursal</label>
+                                <select class="sucursal-stock" required>
+                                    <option value="Centro">Sucursal Centro</option>
+                                    <option value="Norte">Sucursal Norte</option>
+                                    <option value="Sur">Sucursal Sur</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Cantidad Inicial</label>
+                                <input type="number" class="cantidad-stock" required min="0" step="0.01" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Lead Time (horas)</label>
+                                <input type="number" class="leadtime-stock" required min="0" step="0.5" placeholder="2" value="2">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-small" onclick="agregarSucursalStock()">+ Agregar Otra Sucursal</button>
+                </div>
+                
+                <!-- Umbrales de Reaprovisionamiento (RF-INV-21) -->
+                <div class="section-form">
+                    <h3>⚠️ Umbrales de Reaprovisionamiento</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Umbral Mínimo *</label>
+                            <input type="number" id="umbralMinNuevo" required min="0" step="0.01" placeholder="Stock mínimo antes de alerta">
+                        </div>
+                        <div class="form-group">
+                            <label>Umbral Máximo *</label>
+                            <input type="number" id="umbralMaxNuevo" required min="0" step="0.01" placeholder="Stock máximo recomendado">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Medios Visuales (RF-INV-3) -->
+                <div class="section-form">
+                    <h3>📷 Medios Visuales</h3>
+                    <div class="form-group">
+                        <label>Fotos del Producto</label>
+                        <div style="padding: 1rem; border: 2px dashed #ddd; border-radius: 4px; text-align: center; color: #666;">
+                            📷 En producción: Subir fotos del producto<br>
+                            <small>(RF-INV-3: Fotos, fichas técnicas, manuales)</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalAgregarMaterial()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Agregar al Inventario</button>
+                </div>
+            </form>
         </div>
     </div>
     
@@ -1046,6 +1366,147 @@
             alert('Historial de reconciliaciones\n\nMuestra el historial de todas las reconciliaciones ejecutadas, incluyendo:\n- Fecha y hora\n- Diferencias encontradas\n- Acciones tomadas\n- Usuario responsable');
             // En producción: mostrar historial completo
         }
+        
+        // Funciones para agregar material (RF-INV-1, RF-INV-2, RF-INV-3, RF-INV-7, RF-INV-8, RF-INV-21)
+        function abrirModalAgregarMaterial() {
+            document.getElementById('modalAgregarMaterial').classList.add('active');
+        }
+        
+        function cerrarModalAgregarMaterial() {
+            document.getElementById('modalAgregarMaterial').classList.remove('active');
+            document.getElementById('formAgregarMaterial').reset();
+            // Limpiar sucursales adicionales
+            const container = document.getElementById('stockSucursales');
+            while (container.children.length > 1) {
+                container.removeChild(container.lastChild);
+            }
+        }
+        
+        function agregarSucursalStock() {
+            const container = document.getElementById('stockSucursales');
+            const nuevaSucursal = document.createElement('div');
+            nuevaSucursal.className = 'stock-sucursal';
+            nuevaSucursal.innerHTML = `
+                <div class="form-group">
+                    <label>Sucursal</label>
+                    <select class="sucursal-stock" required>
+                        <option value="Centro">Sucursal Centro</option>
+                        <option value="Norte">Sucursal Norte</option>
+                        <option value="Sur">Sucursal Sur</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad Inicial</label>
+                    <input type="number" class="cantidad-stock" required min="0" step="0.01" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>Lead Time (horas)</label>
+                    <input type="number" class="leadtime-stock" required min="0" step="0.5" placeholder="2" value="2">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-secondary btn-small" onclick="this.parentElement.parentElement.remove()" style="margin-top: 1.5rem;">Eliminar</button>
+                </div>
+            `;
+            container.appendChild(nuevaSucursal);
+        }
+        
+        document.getElementById('formAgregarMaterial').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Recopilar datos básicos
+            const datosBasicos = {
+                sku: document.getElementById('skuNuevo').value,
+                nombre: document.getElementById('nombreNuevo').value,
+                categoria: document.getElementById('categoriaNuevo').value,
+                subcategoria: document.getElementById('subcategoriaNuevo').value,
+                marca: document.getElementById('marcaNuevo').value,
+                condicion: document.getElementById('condicionNuevo').value,
+                descripcion: document.getElementById('descripcionNuevo').value
+            };
+            
+            // Recopilar especificaciones técnicas
+            const especificaciones = {
+                dimensiones: document.getElementById('dimensionesNuevo').value,
+                peso: parseFloat(document.getElementById('pesoNuevo').value),
+                unidad: document.getElementById('unidadNuevo').value,
+                cantidadPaquete: document.getElementById('cantidadPaqueteNuevo').value || 1,
+                norma: document.getElementById('normaNuevo').value,
+                origen: document.getElementById('origenNuevo').value,
+                lote: document.getElementById('loteNuevo').value,
+                fechaFabricacion: document.getElementById('fechaFabricacionNuevo').value
+            };
+            
+            // Recopilar stock por sucursal
+            const stockSucursales = [];
+            document.querySelectorAll('.stock-sucursal').forEach(sucursalDiv => {
+                const sucursal = sucursalDiv.querySelector('.sucursal-stock').value;
+                const cantidad = parseFloat(sucursalDiv.querySelector('.cantidad-stock').value);
+                const leadTime = parseFloat(sucursalDiv.querySelector('.leadtime-stock').value);
+                stockSucursales.push({ sucursal, cantidad, leadTime });
+            });
+            
+            // Recopilar umbrales
+            const umbrales = {
+                minimo: parseFloat(document.getElementById('umbralMinNuevo').value),
+                maximo: parseFloat(document.getElementById('umbralMaxNuevo').value)
+            };
+            
+            // Validar que no exista el SKU
+            const skuExistente = inventario.find(item => item.sku === datosBasicos.sku);
+            if (skuExistente) {
+                alert(`El SKU ${datosBasicos.sku} ya existe en el inventario.`);
+                return;
+            }
+            
+            // Crear nuevo material en inventario
+            stockSucursales.forEach((stock, index) => {
+                const nuevoItem = {
+                    id: inventario.length + index + 1,
+                    sku: datosBasicos.sku,
+                    nombre: datosBasicos.nombre,
+                    categoria: datosBasicos.categoria,
+                    marca: datosBasicos.marca,
+                    sucursal: stock.sucursal,
+                    stock: stock.cantidad,
+                    hold: 0,
+                    condicion: datosBasicos.condicion,
+                    umbralMin: umbrales.minimo,
+                    umbralMax: umbrales.maximo,
+                    leadTime: stock.leadTime,
+                    especificaciones: especificaciones
+                };
+                inventario.push(nuevoItem);
+            });
+            
+            // Registrar movimiento de entrada inicial
+            stockSucursales.forEach(stock => {
+                movimientos.unshift({
+                    fecha: new Date().toISOString().replace('T', ' ').substring(0, 16),
+                    tipo: 'entrada',
+                    sku: datosBasicos.sku,
+                    cantidad: stock.cantidad,
+                    sucursal: stock.sucursal,
+                    motivo: 'Ingreso inicial de nuevo material',
+                    usuario: 'Usuario Actual'
+                });
+            });
+            
+            alert(`Material agregado exitosamente:\n\n- SKU: ${datosBasicos.sku}\n- Nombre: ${datosBasicos.nombre}\n- Sucursales: ${stockSucursales.length}\n- Stock total inicial: ${stockSucursales.reduce((sum, s) => sum + s.cantidad, 0)} unidades\n\nEl material ha sido agregado al inventario y está disponible en el marketplace (RF-INV-1, RF-INV-2, RF-INV-7, RF-INV-8).`);
+            
+            // Actualizar contador de SKUs
+            document.getElementById('totalSKUs').textContent = inventario.length;
+            
+            cerrarModalAgregarMaterial();
+            renderInventario();
+            renderMovimientos();
+        });
+        
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modalAgregarMaterial').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cerrarModalAgregarMaterial();
+            }
+        });
         
         // Inicializar vistas
         renderInventario();

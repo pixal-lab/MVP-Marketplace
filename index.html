@@ -167,6 +167,31 @@
             margin-bottom: 0.5rem;
         }
         
+        .product-price-range {
+            font-size: 0.9rem;
+            color: #27ae60;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: #666;
+        }
+        
+        .stat-item strong {
+            color: #2c3e50;
+        }
+        
         .product-availability {
             font-size: 0.85rem;
             padding: 0.25rem 0.5rem;
@@ -335,61 +360,118 @@
             <a href="carrito.html" class="nav-btn">Ver Carrito (3)</a>
             <a href="lista-materiales.html" class="nav-btn">Mis Listas</a>
             <a href="seguimiento.html" class="nav-btn">Seguimiento</a>
+            <a href="excedentes.html" class="nav-btn">Mis Excedentes</a>
             <a href="proveedor-panel.html" class="nav-btn">Panel Proveedor</a>
         </div>
     </div>
     
     <script src="js/app.js"></script>
     <script>
-        // Datos de ejemplo
+        // Datos de ejemplo con información agregada de proveedores
         const productos = [
             {
                 id: 1,
                 nombre: "Cemento Portland 50kg",
                 sku: "CEM-PORT-50",
-                precio: 8500,
+                proveedores: [
+                    { nombre: "Materiales ABC", precio: 8200, distancia: 2.5 },
+                    { nombre: "Construcciones XYZ", precio: 8500, distancia: 5.1 },
+                    { nombre: "Materiales Premium", precio: 8800, distancia: 3.2 },
+                    { nombre: "Obra San Martín (Excedente)", precio: 6500, distancia: 1.8 }
+                ],
                 disponible: "disponible",
-                stock: 150,
-                proveedor: "Materiales ABC",
-                distancia: "2.5 km",
                 tipo: "nuevo"
             },
             {
                 id: 2,
                 nombre: "Ladrillos Fiscales x1000",
                 sku: "LAD-FIS-1000",
-                precio: 45000,
+                proveedores: [
+                    { nombre: "Construcciones XYZ", precio: 45000, distancia: 5.1 },
+                    { nombre: "Materiales ABC", precio: 47000, distancia: 2.5 },
+                    { nombre: "Materiales Premium", precio: 48000, distancia: 3.2 }
+                ],
                 disponible: "parcial",
-                stock: 350,
-                proveedor: "Construcciones XYZ",
-                distancia: "5.1 km",
                 tipo: "nuevo"
             },
             {
                 id: 3,
-                nombre: "Pintura Latex 20L (Excedente)",
-                sku: "PIN-LAT-20-EX",
-                precio: 32000,
+                nombre: "Pintura Latex 20L",
+                sku: "PIN-LAT-20",
+                proveedores: [
+                    { nombre: "Materiales Premium", precio: 32000, distancia: 3.2 },
+                    { nombre: "Materiales ABC", precio: 33000, distancia: 2.5 },
+                    { nombre: "Obra San Martín (Excedente)", precio: 24000, distancia: 1.8 }
+                ],
                 disponible: "disponible",
-                stock: 1,
-                proveedor: "Obra San Martín",
-                distancia: "1.8 km",
-                tipo: "excedente",
-                porcentaje: 85,
-                condicion: "abierto"
+                tipo: "nuevo"
+            },
+            {
+                id: 4,
+                nombre: "Arena Gruesa m³",
+                sku: "ARE-GRU-m3",
+                proveedores: [
+                    { nombre: "Materiales ABC", precio: 25000, distancia: 2.5 },
+                    { nombre: "Construcciones XYZ", precio: 26000, distancia: 5.1 }
+                ],
+                disponible: "disponible",
+                tipo: "nuevo"
             }
         ];
         
+        // Función para calcular estadísticas de proveedores
+        function calcularEstadisticas(producto) {
+            if (!producto.proveedores || producto.proveedores.length === 0) {
+                return {
+                    cantidad: 0,
+                    precioMin: 0,
+                    precioMax: 0,
+                    distanciaMin: 0,
+                    distanciaMax: 0
+                };
+            }
+            
+            const precios = producto.proveedores.map(p => p.precio);
+            const distancias = producto.proveedores.map(p => p.distancia);
+            
+            return {
+                cantidad: producto.proveedores.length,
+                precioMin: Math.min(...precios),
+                precioMax: Math.max(...precios),
+                distanciaMin: Math.min(...distancias),
+                distanciaMax: Math.max(...distancias)
+            };
+        }
+        
         function renderProductos(productos) {
             const grid = document.getElementById('productGrid');
-            grid.innerHTML = productos.map(producto => `
+            grid.innerHTML = productos.map(producto => {
+                const stats = calcularEstadisticas(producto);
+                const precioUnico = stats.precioMin === stats.precioMax;
+                const distanciaUnica = stats.distanciaMin === stats.distanciaMax;
+                
+                return `
                 <div class="product-card" onclick="verProducto(${producto.id})">
                     <div class="product-image">📦 Imagen del Producto</div>
                     <div class="product-title">${producto.nombre}</div>
                     <div class="product-info">SKU: ${producto.sku}</div>
-                    <div class="product-info">Proveedor: ${producto.proveedor}</div>
-                    <div class="product-info">📍 ${producto.distancia}</div>
-                    <div class="product-price">$${producto.precio.toLocaleString()}</div>
+                    
+                    <div class="product-stats">
+                        <div class="stat-item">
+                            <strong>${stats.cantidad}</strong> proveedor${stats.cantidad !== 1 ? 'es' : ''}
+                        </div>
+                        <div class="stat-item">
+                            📍 ${distanciaUnica ? stats.distanciaMin.toFixed(1) : `${stats.distanciaMin.toFixed(1)} - ${stats.distanciaMax.toFixed(1)}`} km
+                        </div>
+                    </div>
+                    
+                    ${precioUnico ? 
+                        `<div class="product-price">$${stats.precioMin.toLocaleString()}</div>` :
+                        `<div class="product-price-range">
+                            <strong>$${stats.precioMin.toLocaleString()}</strong> - <strong>$${stats.precioMax.toLocaleString()}</strong>
+                        </div>`
+                    }
+                    
                     <div>
                         <span class="product-availability ${producto.disponible}">
                             ${producto.disponible === 'disponible' ? '✓ Disponible' : '⚠ Parcial'}
@@ -397,7 +479,11 @@
                         ${producto.tipo === 'excedente' ? '<span style="background:#e8f4f8;color:#2980b9;padding:0.25rem 0.5rem;border-radius:4px;font-size:0.85rem;margin-left:0.5rem;">Excedente</span>' : ''}
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
+            
+            // Actualizar contador de resultados
+            document.getElementById('resultCount').textContent = `${productos.length} producto${productos.length !== 1 ? 's' : ''} encontrado${productos.length !== 1 ? 's' : ''}`;
         }
         
         function buscar() {

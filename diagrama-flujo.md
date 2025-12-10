@@ -36,6 +36,29 @@ flowchart TD
     X --> AA[Entregado]
     Y --> AA
     Z --> AA
+    AA --> AB{¿Excedentes?}
+    AB -->|Sí| AC[Gestión de Excedentes]
+    AB -->|No| [*]
+    AC --> AD{Decisión}
+    AD -->|Devolver| AE[Solicitar Devolución]
+    AD -->|Vender| AF[Registrar Excedente]
+    AE --> AG[Retiro Logístico]
+    AF --> AH[Capturar Información]
+    AH --> AI[Fotos y Condición]
+    AI --> AG
+    AG --> AJ[Tracking Retiro]
+    AJ --> AK[Recepción en QC]
+    AK --> AL{Control Calidad}
+    AL -->|Aprobado| AM[Publicar en Marketplace]
+    AL -->|Rechazado| AN[Notificar Cliente]
+    AM --> AO[Excedente Disponible]
+    AE --> AP[Procesar Devolución]
+    AP --> AQ[Reembolso/Ajuste]
+    AQ --> [*]
+    AN --> [*]
+    AO --> AR[Compra de Excedente]
+    AR --> AS[Venta Completada]
+    AS --> [*]
 ```
 
 ## Estados del Pedido (Mermaid)
@@ -216,6 +239,56 @@ CERCANO A DESTINO
     │
     ▼
 ENTREGADO
+    │
+    ▼
+¿EXCEDENTES?
+    │
+    ├─→ SÍ → GESTIÓN DE EXCEDENTES
+    │         │
+    │         ├─→ DEVOLVER → RETIRO → REEMBOLSO
+    │         │
+    │         └─→ VENDER → REGISTRO → RETIRO → QC → PUBLICAR
+    │
+    └─→ NO → FIN
+```
+
+## Flujo de Excedentes (Mermaid)
+
+```mermaid
+flowchart TD
+    A[Pedido Entregado] --> B{¿Hay Excedentes?}
+    B -->|No| C[Fin del Proceso]
+    B -->|Sí| D{Decisión del Cliente}
+    D -->|Devolver| E[Solicitar Devolución]
+    D -->|Vender| F[Registrar Excedente]
+    
+    F --> G[Capturar Información]
+    G --> H[SKU, Cantidad, Porcentaje]
+    H --> I[Condición y Fotos]
+    I --> J[Ubicación y Referencia]
+    J --> K[Calcular Precio Sugerido]
+    K --> L[Solicitar Retiro Logístico]
+    
+    E --> L
+    L --> M[Generar Orden de Retiro]
+    M --> N[Asignar Operador]
+    N --> O[Tracking de Retiro]
+    O --> P[Recepción en QC]
+    
+    P --> Q{Control de Calidad}
+    Q -->|Aprobado| R[Publicar en Marketplace]
+    Q -->|Rechazado| S[Notificar Cliente]
+    
+    R --> T[Excedente Disponible]
+    T --> U[Compra de Excedente]
+    U --> V[Venta Completada]
+    
+    E --> W[Procesar Devolución]
+    W --> X[Reembolso/Ajuste Inventario]
+    X --> Y[Fin]
+    
+    S --> Y
+    V --> Y
 ```
 
 ## Acciones Principales por Módulo
@@ -255,4 +328,14 @@ ENTREGADO
 - Ver tracking en tiempo real
 - Ver timeline de eventos
 - Recibir notificaciones
+
+### Módulo de Excedentes (RF-EC-29, RF-EC-30, RF-EC-31, RF-EC-32)
+- Detectar excedentes después de entrega
+- Solicitar devolución o venta
+- Registrar excedente con fotos y condición
+- Solicitar retiro logístico
+- Seguimiento de retiro
+- Control de calidad (QC)
+- Publicación en marketplace secundario
+- Procesar reembolso por devolución
 

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Excedentes - Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+        
+        .pedidos-section {
+            margin-bottom: 2rem;
+        }
+        
+        .pedido-card {
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.3s;
+        }
+        
+        .pedido-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .pedido-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .pedido-info h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pedido-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .pedido-items {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ecf0f1;
+        }
+        
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+        
+        .item-row:last-child {
+            border-bottom: none;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .excedentes-list {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .excedente-card {
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            padding: 1.5rem;
+            background: #f8f9fa;
+        }
+        
+        .excedente-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-pendiente {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-qc {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-publicado {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rechazado {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .excedente-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: #ecf0f1;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            display: inline-block;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .section {
+                padding: 1rem;
+            }
+            
+            .pedido-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .excedente-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .excedente-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏗️ Gestión de Excedentes</h1>
+    </div>
+    
+    <div class="container">
+        <div class="nav-actions">
+            <a href="index.html" class="nav-btn">← Volver al Marketplace</a>
+            <a href="seguimiento.html" class="nav-btn">Mis Pedidos</a>
+        </div>
+        
+        <div class="section pedidos-section">
+            <h2 class="section-title">Pedidos con Posibles Excedentes</h2>
+            <div id="pedidosList">
+                <!-- Pedidos se cargarán aquí -->
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Mis Excedentes Registrados</h2>
+            <div class="excedentes-list" id="excedentesList">
+                <!-- Excedentes se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para registrar excedente -->
+    <div class="modal" id="modalExcedente">
+        <div class="modal-content">
+            <h2>Registrar Excedente para Venta</h2>
+            <form id="formExcedente">
+                <div class="form-group">
+                    <label>SKU del Material</label>
+                    <input type="text" id="skuExcedente" required readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nombre del Producto</label>
+                    <input type="text" id="nombreExcedente" required readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>Cantidad Remanente</label>
+                    <input type="number" id="cantidadExcedente" required min="1" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label>Porcentaje Restante (%)</label>
+                    <input type="number" id="porcentajeExcedente" required min="1" max="100">
+                </div>
+                
+                <div class="form-group">
+                    <label>Condición del Material</label>
+                    <select id="condicionExcedente" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="nuevo">Nuevo (sin abrir)</option>
+                        <option value="abierto">Abierto (sellado roto)</option>
+                        <option value="parcial">Parcial (usado parcialmente)</option>
+                        <option value="dañado">Dañado (con defectos menores)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Ubicación Actual</label>
+                    <input type="text" id="ubicacionExcedente" required placeholder="Dirección donde se encuentra el material">
+                </div>
+                
+                <div class="form-group">
+                    <label>Referencia a Obra/Pedido</label>
+                    <input type="text" id="referenciaExcedente" required readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>Descripción Adicional</label>
+                    <textarea id="descripcionExcedente" placeholder="Detalles adicionales sobre el estado del material..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Fotos del Material</label>
+                    <div style="padding: 1rem; border: 2px dashed #ddd; border-radius: 4px; text-align: center; color: #666;">
+                        📷 En producción: Subir fotos reales del material<br>
+                        <small>(RF-INV-26: Requiere fotos reales para excedentes)</small>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Registrar y Solicitar Retiro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Datos de ejemplo
+        const pedidosConExcedentes = [
+            {
+                id: 'ORD-2024-001234',
+                fecha: '2024-01-15',
+                estado: 'entregado',
+                items: [
+                    {
+                        sku: 'CEM-PORT-50',
+                        nombre: 'Cemento Portland 50kg',
+                        cantidadPedida: 20,
+                        cantidadUsada: 15,
+                        cantidadExcedente: 5,
+                        referencia: 'ORD-2024-001234'
+                    },
+                    {
+                        sku: 'PIN-LAT-20',
+                        nombre: 'Pintura Latex 20L',
+                        cantidadPedida: 3,
+                        cantidadUsada: 2.5,
+                        cantidadExcedente: 0.5,
+                        referencia: 'ORD-2024-001234'
+                    }
+                ]
+            }
+        ];
+        
+        const excedentesRegistrados = [
+            {
+                id: 1,
+                sku: 'CEM-PORT-50',
+                nombre: 'Cemento Portland 50kg',
+                cantidad: 5,
+                porcentaje: 100,
+                condicion: 'nuevo',
+                ubicacion: 'Obra San Martín, Av. Providencia 1234',
+                referencia: 'ORD-2024-001234',
+                estado: 'pendiente_retiro',
+                precioSugerido: 6500,
+                fechaRegistro: '2024-01-20'
+            },
+            {
+                id: 2,
+                sku: 'PIN-LAT-20',
+                nombre: 'Pintura Latex 20L',
+                cantidad: 0.5,
+                porcentaje: 25,
+                condicion: 'abierto',
+                ubicacion: 'Obra San Martín, Av. Providencia 1234',
+                referencia: 'ORD-2024-001234',
+                estado: 'en_qc',
+                precioSugerido: 8000,
+                fechaRegistro: '2024-01-20'
+            }
+        ];
+        
+        function renderPedidos() {
+            const container = document.getElementById('pedidosList');
+            container.innerHTML = pedidosConExcedentes.map(pedido => `
+                <div class="pedido-card">
+                    <div class="pedido-header">
+                        <div class="pedido-info">
+                            <h3>Pedido ${pedido.id}</h3>
+                            <p>Fecha: ${pedido.fecha} • Estado: ${pedido.estado}</p>
+                        </div>
+                    </div>
+                    <div class="pedido-items">
+                        <h4 style="margin-bottom: 1rem;">Materiales con Excedentes:</h4>
+                        ${pedido.items.map(item => `
+                            <div class="item-row">
+                                <div>
+                                    <strong>${item.nombre}</strong><br>
+                                    <small>SKU: ${item.sku}</small><br>
+                                    <small>Pedido: ${item.cantidadPedida} • Usado: ${item.cantidadUsada} • Excedente: ${item.cantidadExcedente}</small>
+                                </div>
+                                <div>
+                                    <button class="btn btn-success btn-small" onclick="registrarExcedente('${item.sku}', '${item.nombre}', ${item.cantidadExcedente}, '${item.referencia}')">
+                                        Vender Excedente
+                                    </button>
+                                    <button class="btn btn-secondary btn-small" onclick="solicitarDevolucion('${item.sku}', '${item.nombre}', ${item.cantidadExcedente}, '${item.referencia}')" style="margin-top: 0.5rem;">
+                                        Devolver
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function renderExcedentes() {
+            const container = document.getElementById('excedentesList');
+            if (excedentesRegistrados.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No hay excedentes registrados aún.</p>';
+                return;
+            }
+            
+            container.innerHTML = excedentesRegistrados.map(exc => {
+                const estadoLabels = {
+                    'pendiente_retiro': { text: 'Pendiente Retiro', class: 'status-pendiente' },
+                    'en_retiro': { text: 'En Retiro', class: 'status-pendiente' },
+                    'en_qc': { text: 'En Control de Calidad', class: 'status-qc' },
+                    'publicado': { text: 'Publicado en Marketplace', class: 'status-publicado' },
+                    'rechazado': { text: 'Rechazado', class: 'status-rechazado' },
+                    'vendido': { text: 'Vendido', class: 'status-publicado' }
+                };
+                
+                const estado = estadoLabels[exc.estado] || estadoLabels.pendiente_retiro;
+                
+                return `
+                    <div class="excedente-card">
+                        <div class="excedente-header">
+                            <div>
+                                <h3>${exc.nombre}</h3>
+                                <p style="color: #666; margin-top: 0.25rem;">SKU: ${exc.sku} • Referencia: ${exc.referencia}</p>
+                            </div>
+                            <span class="status-badge ${estado.class}">${estado.text}</span>
+                        </div>
+                        <div class="excedente-info">
+                            <div class="info-item">
+                                <span class="info-label">Cantidad</span>
+                                <span class="info-value">${exc.cantidad} unidades</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Porcentaje Restante</span>
+                                <span class="info-value">${exc.porcentaje}%</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Condición</span>
+                                <span class="info-value">${exc.condicion}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Precio Sugerido</span>
+                                <span class="info-value" style="color: #27ae60;">$${exc.precioSugerido.toLocaleString()}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Ubicación</span>
+                                <span class="info-value">${exc.ubicacion}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Fecha Registro</span>
+                                <span class="info-value">${exc.fechaRegistro}</span>
+                            </div>
+                        </div>
+                        ${exc.estado === 'pendiente_retiro' ? `
+                            <div style="margin-top: 1rem;">
+                                <button class="btn btn-primary btn-small" onclick="solicitarRetiro(${exc.id})">Solicitar Retiro Logístico</button>
+                            </div>
+                        ` : ''}
+                        ${exc.estado === 'en_retiro' ? `
+                            <div style="margin-top: 1rem;">
+                                <a href="seguimiento.html" class="btn btn-primary btn-small">Ver Tracking de Retiro</a>
+                            </div>
+                        ` : ''}
+                        ${exc.estado === 'publicado' ? `
+                            <div style="margin-top: 1rem;">
+                                <a href="producto.html" class="btn btn-success btn-small">Ver en Marketplace</a>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function registrarExcedente(sku, nombre, cantidad, referencia) {
+            document.getElementById('skuExcedente').value = sku;
+            document.getElementById('nombreExcedente').value = nombre;
+            document.getElementById('cantidadExcedente').value = cantidad;
+            document.getElementById('referenciaExcedente').value = referencia;
+            document.getElementById('modalExcedente').classList.add('active');
+        }
+        
+        function cerrarModal() {
+            document.getElementById('modalExcedente').classList.remove('active');
+            document.getElementById('formExcedente').reset();
+        }
+        
+        function solicitarDevolucion(sku, nombre, cantidad, referencia) {
+            if (confirm(`¿Solicitar devolución de ${cantidad} unidades de ${nombre}?\n\nSe procesará el reembolso y se coordinará el retiro del material.`)) {
+                alert(`Devolución solicitada:\n\n- SKU: ${sku}\n- Cantidad: ${cantidad}\n- Referencia: ${referencia}\n\nSe generará una orden de retiro y se procesará el reembolso una vez recibido el material (RF-EC-32, RF-LOG-20).`);
+                // En producción: crear solicitud de devolución
+            }
+        }
+        
+        function solicitarRetiro(excedenteId) {
+            const excedente = excedentesRegistrados.find(e => e.id === excedenteId);
+            if (excedente) {
+                alert(`Solicitando retiro logístico para excedente:\n\n- ${excedente.nombre}\n- Ubicación: ${excedente.ubicacion}\n\nSe generará una orden de retiro y podrás hacer seguimiento en tiempo real (RF-LOG-20, RF-LOG-23).`);
+                // En producción: crear orden de retiro
+            }
+        }
+        
+        document.getElementById('formExcedente').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                sku: document.getElementById('skuExcedente').value,
+                nombre: document.getElementById('nombreExcedente').value,
+                cantidad: document.getElementById('cantidadExcedente').value,
+                porcentaje: document.getElementById('porcentajeExcedente').value,
+                condicion: document.getElementById('condicionExcedente').value,
+                ubicacion: document.getElementById('ubicacionExcedente').value,
+                referencia: document.getElementById('referenciaExcedente').value,
+                descripcion: document.getElementById('descripcionExcedente').value
+            };
+            
+            alert(`Excedente registrado exitosamente:\n\n- ${formData.nombre}\n- Cantidad: ${formData.cantidad}\n- Condición: ${formData.condicion}\n\nEl precio se calculará automáticamente según condición, porcentaje restante y demanda (RF-INV-27).\n\nSe generará una orden de retiro logístico (RF-LOG-20).`);
+            
+            cerrarModal();
+            // En producción: guardar excedente y generar orden de retiro
+        });
+        
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modalExcedente').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cerrarModal();
+            }
+        });
+        
+        // Inicializar
+        renderPedidos();
+        renderExcedentes();
+    </script>
+</body>
+</html>
+
