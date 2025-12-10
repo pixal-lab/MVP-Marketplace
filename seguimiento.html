@@ -165,6 +165,60 @@
             color: #333;
             display: inline-block;
         }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .order-header {
+                padding: 1rem;
+            }
+            
+            .order-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline-section {
+                padding: 1rem;
+            }
+            
+            .timeline {
+                padding-left: 1.5rem;
+            }
+            
+            .timeline::before {
+                left: 0.25rem;
+            }
+            
+            .timeline-item::before {
+                left: -1.5rem;
+            }
+            
+            .map-section {
+                padding: 1rem;
+            }
+            
+            .map-placeholder {
+                height: 200px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .order-header h2 {
+                font-size: 1.1rem;
+            }
+            
+            .timeline-content {
+                padding: 0.75rem;
+            }
+        }
     </style>
 </head>
 <body>

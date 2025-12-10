@@ -154,6 +154,54 @@
             color: #333;
             display: inline-block;
         }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .lists-section {
+                padding: 1rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .list-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .list-detail {
+                padding: 1rem;
+            }
+            
+            .list-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .list-card {
+                padding: 1rem;
+            }
+            
+            .list-title {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>

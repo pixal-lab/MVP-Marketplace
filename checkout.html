@@ -167,6 +167,76 @@
             color: white;
             margin-top: 0.5rem;
         }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .checkout-steps {
+                padding: 1rem;
+                flex-wrap: wrap;
+            }
+            
+            .step {
+                font-size: 0.85rem;
+                padding: 0.5rem;
+            }
+            
+            .step::after {
+                display: none;
+            }
+            
+            .checkout-section {
+                padding: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.1rem;
+            }
+            
+            .address-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .time-slots {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-box {
+                padding: 1rem;
+            }
+            
+            .summary-row {
+                font-size: 0.9rem;
+            }
+            
+            .summary-row.total {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .checkout-steps {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .step {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .checkout-section {
+                padding: 0.75rem;
+            }
+        }
     </style>
 </head>
 <body>
