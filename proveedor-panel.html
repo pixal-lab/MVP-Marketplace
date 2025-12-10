@@ -187,26 +187,31 @@
             background: #f8f9fa;
         }
         
+        .inventory-table td.stock-cell {
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .stock-cell.stock-high {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .stock-cell.stock-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .stock-cell.stock-low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
         .stock-badge {
             padding: 0.25rem 0.75rem;
             border-radius: 12px;
             font-size: 0.85rem;
             font-weight: 600;
-        }
-        
-        .stock-high {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .stock-medium {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .stock-low {
-            background: #f8d7da;
-            color: #721c24;
         }
         
         .stock-hold {
@@ -481,7 +486,11 @@
             <div class="section">
                 <div class="section-header">
                     <h2 class="section-title">Gestión de Inventario por Sucursal</h2>
-                    <button class="btn btn-primary btn-small">Sincronizar Stock</button>
+                    <div>
+                        <button class="btn btn-primary btn-small" onclick="sincronizarStock()">Sincronizar Stock</button>
+                        <button class="btn btn-secondary btn-small" onclick="cargarExcel()">Cargar Excel/CSV</button>
+                        <button class="btn btn-secondary btn-small" onclick="configurarSincronizacion()">Configurar API</button>
+                    </div>
                 </div>
                 
                 <div class="sucursal-selector">
@@ -524,8 +533,9 @@
                 <div class="section-header">
                     <h2 class="section-title">Movimientos y Trazabilidad</h2>
                     <div>
-                        <button class="btn btn-secondary btn-small">Filtrar</button>
-                        <button class="btn btn-primary btn-small">Exportar</button>
+                        <button class="btn btn-secondary btn-small" onclick="filtrarMovimientos()">Filtrar</button>
+                        <button class="btn btn-primary btn-small" onclick="exportarMovimientos()">Exportar</button>
+                        <button class="btn btn-primary btn-small" onclick="registrarMovimientoManual()">Nuevo Movimiento</button>
                     </div>
                 </div>
                 
@@ -540,7 +550,10 @@
             <div class="section">
                 <div class="section-header">
                     <h2 class="section-title">Gestión de Excedentes</h2>
-                    <button class="btn btn-primary btn-small">Nuevo Excedente</button>
+                    <div>
+                        <button class="btn btn-primary btn-small" onclick="registrarExcedente()">Registrar Excedente</button>
+                        <button class="btn btn-secondary btn-small" onclick="verExcedentesPendientes()">Pendientes QC</button>
+                    </div>
                 </div>
                 
                 <div id="excedentesList">
@@ -567,7 +580,10 @@
             <div class="section">
                 <div class="section-header">
                     <h2 class="section-title">Reconciliación de Stock</h2>
-                    <button class="btn btn-primary btn-small">Ejecutar Reconciliación</button>
+                    <div>
+                        <button class="btn btn-primary btn-small" onclick="ejecutarReconciliacion()">Ejecutar Reconciliación</button>
+                        <button class="btn btn-secondary btn-small" onclick="verHistorialReconciliacion()">Ver Historial</button>
+                    </div>
                 </div>
                 
                 <div id="reconciliationList">
@@ -755,8 +771,8 @@
                         <td><strong>${item.sku}</strong></td>
                         <td>${item.nombre}</td>
                         <td>${item.sucursal}</td>
-                        <td>
-                            <span class="stock-badge ${stockClass}">${stockDisponible} unidades</span>
+                        <td class="stock-cell ${stockClass}">
+                            ${stockDisponible} unidades
                         </td>
                         <td>
                             ${item.hold > 0 ? `<span class="stock-badge stock-hold">${item.hold} en HOLD</span>` : '-'}
@@ -764,9 +780,15 @@
                         <td>${item.condicion}</td>
                         <td>
                             <div class="quantity-control">
-                                <button class="btn btn-secondary btn-small" onclick="ajustarStock(${item.id}, -1)">-</button>
-                                <input type="number" class="quantity-input" value="${item.stock}" onchange="actualizarStock(${item.id}, this.value)">
-                                <button class="btn btn-secondary btn-small" onclick="ajustarStock(${item.id}, 1)">+</button>
+                                <button class="btn btn-secondary btn-small" onclick="ajustarStock(${item.id}, -1)" title="Disminuir stock">-</button>
+                                <input type="number" class="quantity-input" value="${item.stock}" onchange="actualizarStock(${item.id}, this.value)" title="Stock total">
+                                <button class="btn btn-secondary btn-small" onclick="ajustarStock(${item.id}, 1)" title="Aumentar stock">+</button>
+                            </div>
+                            <div style="margin-top: 0.5rem; display: flex; gap: 0.25rem; flex-wrap: wrap;">
+                                <button class="btn btn-primary btn-small" onclick="registrarEntrada(${item.id})" title="Registrar entrada de stock">Entrada</button>
+                                <button class="btn btn-secondary btn-small" onclick="registrarSalida(${item.id})" title="Registrar salida de stock">Salida</button>
+                                <button class="btn btn-secondary btn-small" onclick="transferirStock(${item.id})" title="Transferir a otra sucursal">Transferir</button>
+                                <button class="btn btn-secondary btn-small" onclick="configurarUmbrales(${item.id})" title="Configurar umbrales de reaprovisionamiento">Umbrales</button>
                             </div>
                         </td>
                     </tr>
@@ -891,11 +913,138 @@
         }
         
         function aprobarExcedente(id) {
-            alert('Excedente aprobado. Se agregará al inventario después de QC.');
+            const excedente = excedentes.find(e => e.id === id);
+            if (excedente) {
+                alert(`Excedente ${excedente.sku} aprobado. Se enviará a control de calidad (QC) para verificación y luego se agregará al inventario.`);
+                // En producción: enviar a QC (RF-INV-24)
+            }
         }
         
         function rechazarExcedente(id) {
-            alert('Excedente rechazado.');
+            const excedente = excedentes.find(e => e.id === id);
+            if (excedente) {
+                if (confirm(`¿Rechazar el excedente ${excedente.sku}? No se agregará al inventario.`)) {
+                    alert('Excedente rechazado. No se agregará al inventario.');
+                    // En producción: marcar como rechazado (RF-INV-17)
+                }
+            }
+        }
+        
+        // Funciones de gestión de stock (RF-INV-18, RF-INV-19)
+        function registrarEntrada(itemId) {
+            const item = inventario.find(i => i.id === itemId);
+            if (item) {
+                const cantidad = prompt(`Registrar entrada de stock para ${item.sku}\n\nCantidad:`, '0');
+                if (cantidad && !isNaN(cantidad) && parseInt(cantidad) > 0) {
+                    const motivo = prompt('Motivo de la entrada:', 'Reaprovisionamiento');
+                    if (motivo) {
+                        alert(`Entrada registrada: +${cantidad} unidades de ${item.sku}\nMotivo: ${motivo}\n\nSe registrará en el historial de movimientos.`);
+                        // En producción: registrar movimiento (RF-INV-18, RF-INV-20)
+                    }
+                }
+            }
+        }
+        
+        function registrarSalida(itemId) {
+            const item = inventario.find(i => i.id === itemId);
+            if (item) {
+                const cantidad = prompt(`Registrar salida de stock para ${item.sku}\n\nCantidad disponible: ${item.stock - item.hold}\nCantidad a salir:`, '0');
+                if (cantidad && !isNaN(cantidad) && parseInt(cantidad) > 0) {
+                    const motivo = prompt('Motivo de la salida:', 'Venta');
+                    if (motivo) {
+                        alert(`Salida registrada: -${cantidad} unidades de ${item.sku}\nMotivo: ${motivo}\n\nSe registrará en el historial de movimientos.`);
+                        // En producción: registrar movimiento (RF-INV-18, RF-INV-20)
+                    }
+                }
+            }
+        }
+        
+        function transferirStock(itemId) {
+            const item = inventario.find(i => i.id === itemId);
+            if (item) {
+                const cantidad = prompt(`Transferir stock de ${item.sku}\n\nSucursal origen: ${item.sucursal}\nStock disponible: ${item.stock - item.hold}\n\nCantidad a transferir:`, '0');
+                if (cantidad && !isNaN(cantidad) && parseInt(cantidad) > 0) {
+                    const sucursales = ['Centro', 'Norte', 'Sur'].filter(s => s !== item.sucursal);
+                    const destino = prompt(`Sucursal destino:\n${sucursales.map((s, i) => `${i + 1}. ${s}`).join('\n')}`, '1');
+                    if (destino) {
+                        const sucursalDestino = sucursales[parseInt(destino) - 1];
+                        if (sucursalDestino) {
+                            alert(`Transferencia programada:\n${cantidad} unidades de ${item.sku}\nDe: ${item.sucursal}\nA: ${sucursalDestino}\n\nSe registrará como movimiento de transferencia.`);
+                            // En producción: registrar transferencia (RF-INV-18)
+                        }
+                    }
+                }
+            }
+        }
+        
+        function configurarUmbrales(itemId) {
+            const item = inventario.find(i => i.id === itemId);
+            if (item) {
+                const umbralMin = prompt(`Configurar umbral mínimo para ${item.sku}\n\nValor actual: ${item.umbralMin}\nNuevo valor:`, item.umbralMin);
+                const umbralMax = prompt(`Configurar umbral máximo para ${item.sku}\n\nValor actual: ${item.umbralMax}\nNuevo valor:`, item.umbralMax);
+                if (umbralMin && umbralMax && !isNaN(umbralMin) && !isNaN(umbralMax)) {
+                    alert(`Umbrales configurados para ${item.sku}:\nMínimo: ${umbralMin}\nMáximo: ${umbralMax}\n\nSe generarán alertas automáticas cuando el stock esté fuera de estos rangos.`);
+                    // En producción: actualizar umbrales (RF-INV-21, RF-INV-22)
+                }
+            }
+        }
+        
+        // Funciones de sincronización (RF-INV-12, RF-INV-13, RF-INV-14)
+        function sincronizarStock() {
+            alert('Sincronizando stock con el marketplace...\n\nEsto actualizará la disponibilidad mostrada a los clientes mediante API REST.');
+            // En producción: llamar API de sincronización (RF-INV-12)
+        }
+        
+        function cargarExcel() {
+            alert('Carga manual de stock desde Excel/CSV\n\nFormato requerido:\n- SKU\n- Sucursal\n- Cantidad\n- Condición\n\nPermite edición directa por SKU (RF-INV-14)');
+            // En producción: abrir modal de carga de archivo
+        }
+        
+        function configurarSincronizacion() {
+            alert('Configuración de sincronización\n\nOpciones:\n- API REST: El marketplace consulta tu stock\n- Webhooks: Notificas cambios en tiempo real\n- Manual: Actualización manual\n\n(RF-INV-12, RF-INV-13)');
+            // En producción: abrir configuración de API/webhooks
+        }
+        
+        // Funciones de movimientos (RF-INV-18, RF-INV-20)
+        function filtrarMovimientos() {
+            alert('Filtrar movimientos\n\nFiltros disponibles:\n- Por SKU\n- Por tipo (Entrada/Salida/Ajuste/Transferencia)\n- Por sucursal\n- Por rango de fechas\n- Por usuario');
+            // En producción: abrir modal de filtros
+        }
+        
+        function exportarMovimientos() {
+            alert('Exportando movimientos...\n\nSe generará un archivo con el historial completo de movimientos para auditoría (RF-INV-20)');
+            // En producción: generar CSV/Excel
+        }
+        
+        function registrarMovimientoManual() {
+            alert('Registrar movimiento manual\n\nTipos disponibles:\n- Entrada\n- Salida\n- Ajuste\n- Transferencia\n- Devolución\n- Reingreso por cancelación\n\n(RF-INV-18)');
+            // En producción: abrir formulario de movimiento
+        }
+        
+        // Funciones de excedentes (RF-INV-25, RF-INV-26, RF-INV-27)
+        function registrarExcedente() {
+            alert('Registrar nuevo excedente\n\nInformación requerida:\n- SKU\n- Cantidad remanente\n- Porcentaje restante\n- Condición (nuevo/abierto/parcial/dañado)\n- Fotos reales\n- Ubicación\n- Referencia a obra/pedido original\n\nEl precio se calculará automáticamente según condición y demanda (RF-INV-26, RF-INV-27)');
+            // En producción: abrir formulario de registro
+        }
+        
+        function verExcedentesPendientes() {
+            alert('Excedentes pendientes de QC\n\nLos excedentes ingresados deben pasar por control de calidad antes de publicarse en el marketplace.\n\nAquí puedes ver los que están en proceso de verificación (RF-INV-24)');
+            // En producción: filtrar excedentes por estado
+        }
+        
+        // Funciones de reconciliación (RF-INV-16)
+        function ejecutarReconciliacion() {
+            alert('Ejecutando reconciliación automática...\n\nComparando:\n- Stock declarado por proveedor\n- Stock transado en marketplace\n\nSe generarán alertas por diferencias detectadas (RF-INV-16)');
+            // En producción: ejecutar algoritmo de reconciliación
+            setTimeout(() => {
+                alert('Reconciliación completada.\n\nDiferencias encontradas: 2\nVer detalles en la tabla de abajo.');
+                renderReconciliacion();
+            }, 1000);
+        }
+        
+        function verHistorialReconciliacion() {
+            alert('Historial de reconciliaciones\n\nMuestra el historial de todas las reconciliaciones ejecutadas, incluyendo:\n- Fecha y hora\n- Diferencias encontradas\n- Acciones tomadas\n- Usuario responsable');
+            // En producción: mostrar historial completo
         }
         
         // Inicializar vistas
